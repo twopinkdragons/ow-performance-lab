@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OW Performance Lab</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0"></script>
+    
+    <style>
+        body { 
+            background-image: linear-gradient(rgba(18, 22, 29, 0.7), rgba(18, 22, 29, 0.7)), 
+                              url('https://imgs.search.brave.com/9fsDzBP1t2jf-Gk5RGcuAa2RsBW22ot65-64zb-8jF8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnJl/ZGQuaXQvcGltazFr/enB2bGc1MS5wbmc');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: #ffffff; font-family: 'Segoe UI', sans-serif; 
+            display: flex; flex-direction: column; align-items: center; 
+            min-height: 100vh; margin: 0; padding: 20px;
+            overflow: hidden;
+        }
+
+        .identity-bar {
+            width: 100%; max-width: 1400px; background: rgba(30, 37, 46, 0.9);
+            padding: 20px; border-radius: 4px; margin-bottom: 25px;
+            border-top: 3px solid #f06414; display: flex; align-items: flex-end; gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .btag-input-large { flex: 3; }
+        .btag-input-small { flex: 1; max-width: 120px; }
+        
+        .sync-btn {
+            background: #f06414; color: white; border: none; padding: 10px 30px;
+            height: 44px; font-weight: bold; text-transform: uppercase; cursor: pointer;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); transition: all 0.2s;
+        }
+
+        .sync-info { font-size: 0.7rem; color: #aaa; min-width: 150px; line-height: 1.4; }
+        #next-sync-timer { color: #f06414; font-weight: bold; }
+
+        .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; max-width: 1400px; }
+        .app-container { background: #1e252e; padding: 25px; border-radius: 4px; border-left: 5px solid #f06414; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .tank-card { border-left-color: #597cc8; }
+        .dps-card { border-left-color: #aa1e1e; }
+        .supp-card { border-left-color: #4aad3d; }
+        
+        h1 { text-transform: uppercase; font-style: italic; letter-spacing: -1px; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 1.1rem; display: flex; justify-content: space-between; }
+        
+        .input-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        .input-group { flex: 1; }
+        label { display: block; font-size: 0.65rem; text-transform: uppercase; color: #aaa; margin-bottom: 5px; }
+        input { width: 100%; padding: 10px; background: #2a333e; border: 1px solid #444; color: white; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
+        
+        input[readonly] { background: #1a1f26; color: #888; cursor: not-allowed; border-color: #333; outline: none; }
+
+        .results-panel { background: rgba(0, 0, 0, 0.4); padding: 15px; border-radius: 4px; }
+        .chart-wrapper { margin: 15px 0; background: #111; padding: 10px; border-radius: 4px; height: 180px; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .stat-val { display: block; font-size: 1.1rem; font-weight: bold; color: #00aeff; }
+        
+        .interpretation-box { 
+            font-size: 0.8rem; 
+            line-height: 1.4; 
+            color: #ccc; 
+            border-left: 3px solid #f06414; 
+            padding: 12px; 
+            min-height: 60px; 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.03); 
+            border-radius: 4px;
+        }
+
+        .interpretation-box .header-text { 
+			font-weight: bold; 
+			font-size: 1.1rem; 
+			display: block;
+			margin-bottom: 2px; 
+			line-height: 1.2; 
+		}
+
+        .projections-container { border-top: 1px solid #333; padding-top: 15px; position: relative; }
+        .projection-card { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 4px; margin-bottom: 12px; font-size: 0.8rem; border-left: 2px solid #444; position: relative; }
+        .proj-label-main { color: #aaa; text-transform: uppercase; font-size: 0.6rem; margin-bottom: 8px; display: block; letter-spacing: 1px; }
+        
+        .up-diff { color: #00ff88; font-weight: bold; } 
+        .down-diff { color: #ff3e3e; font-weight: bold; }
+        .tier-badge { position: absolute; left: 50%; transform: translateX(-50%); color: white; font-size: 0.55rem; font-weight: 900; padding: 1px 8px; border-radius: 2px; text-transform: uppercase; z-index: 2; }
+        .badge-next { top: -8px; background: #00aeff; }
+        .badge-prev { bottom: -8px; background: #ff3e3e; }
+        .divider-line { height: 1px; background: rgba(255,255,255,0.1); margin: 20px 0; }
+
+        @media (max-width: 1100px) { .dashboard-grid { grid-template-columns: 1fr; } .identity-bar { flex-direction: column; align-items: stretch; } }
+    </style>
+</head>
+<body>
+
+    <div class="identity-bar">
+        <div class="input-group btag-input-large">
+            <label>BattleTag Name</label>
+            <input type="text" id="player-name" value="pinkdragons">
+        </div>
+        <div class="input-group btag-input-small">
+            <label>ID (#)</label>
+            <input type="number" id="player-id" value="1685">
+        </div>
+        <button id="sync-button" class="sync-btn" onclick="syncAI()">Sync Profile</button>
+        <div class="sync-info">
+            Last Sync: <span id="last-sync-time">Never</span><br>
+            Auto-Sync: <span id="next-sync-timer">15:00</span>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="app-container tank-card">
+            <h1><div>Tank <span id="warn-tank" style="color: #ff3e3e; font-size: 0.7rem;"></span></div></h1>
+            <div class="input-row">
+                <div class="input-group"><label>Wins</label><input type="number" id="wins-tank" value="0" readonly></div>
+                <div class="input-group"><label>Losses</label><input type="number" id="losses-tank" value="0" readonly></div>
+            </div>
+            <div class="results-panel">
+                <div class="stat-grid">
+                    <div><label>Total (n)</label><span id="total-tank" class="stat-val">0</span></div>
+                    <div><label>Win Rate</label><span id="wr-tank" class="stat-val">0%</span></div>
+                    <div><label>Z-Score (z)</label><span id="z-tank" class="stat-val">0.00</span></div>
+                </div>
+                <div class="chart-wrapper"><canvas id="chart-tank"></canvas></div>
+                <div id="interp-tank" class="interpretation-box"></div>
+                <div id="projections-tank" class="projections-container"></div>
+            </div>
+        </div>
+
+        <div class="app-container dps-card">
+            <h1><div>Damage <span id="warn-dps" style="color: #ff3e3e; font-size: 0.7rem;"></span></div></h1>
+            <div class="input-row">
+                <div class="input-group"><label>Wins</label><input type="number" id="wins-dps" value="0" readonly></div>
+                <div class="input-group"><label>Losses</label><input type="number" id="losses-dps" value="0" readonly></div>
+            </div>
+            <div class="results-panel">
+                <div class="stat-grid">
+                    <div><label>Total (n)</label><span id="total-dps" class="stat-val">0</span></div>
+                    <div><label>Win Rate</label><span id="wr-dps" class="stat-val">0%</span></div>
+                    <div><label>Z-Score (z)</label><span id="z-dps" class="stat-val">0.00</span></div>
+                </div>
+                <div class="chart-wrapper"><canvas id="chart-dps"></canvas></div>
+                <div id="interp-dps" class="interpretation-box"></div>
+                <div id="projections-dps" class="projections-container"></div>
+            </div>
+        </div>
+
+        <div class="app-container supp-card">
+            <h1><div>Support <span id="warn-supp" style="color: #ff3e3e; font-size: 0.7rem;"></span></div></h1>
+            <div class="input-row">
+                <div class="input-group"><label>Wins</label><input type="number" id="wins-supp" value="0" readonly></div>
+                <div class="input-group"><label>Losses</label><input type="number" id="losses-supp" value="0" readonly></div>
+            </div>
+            <div class="results-panel">
+                <div class="stat-grid">
+                    <div><label>Total (n)</label><span id="total-supp" class="stat-val">0</span></div>
+                    <div><label>Win Rate</label><span id="wr-supp" class="stat-val">0%</span></div>
+                    <div><label>Z-Score (z)</label><span id="z-supp" class="stat-val">0.00</span></div>
+                </div>
+                <div class="chart-wrapper"><canvas id="chart-supp"></canvas></div>
+                <div id="interp-supp" class="interpretation-box"></div>
+                <div id="projections-supp" class="projections-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const interpretationLevels = [
+			{ min: 2.58, title: "Exceptional Overperformance", color: "#00ff88", text: "Strong evidence you are ranked below your true skill." },
+			{ min: 1.96, title: "Clear Overperformance", color: "#40f095", text: "Statistically above expectation. You may be ranked too lowly." },
+			{ min: 1.65, title: "Probable Overperformance", color: "#5de09e", text: "You are meaningfully outperforming your current rank." },
+			{ min: 1.0,  title: "Emerging Overperformance", color: "#74d0a4", text: "Early signs of positive deviation from rank expectations." },
+			{ min: -1.0, title: "No Meaningful Signal", color: "#f06414", text: "Results fall within normal statistical variation." },
+			{ min: -1.65, title: "Emerging Underperformance", color: "#d48484", text: "Early signs of negative deviation from rank expectations." },
+			{ min: -1.96, title: "Probable Underperformance", color: "#e6716f", text: "You are meaningfully underperforming your current rank." },
+			{ min: -2.58, title: "Clear Underperformance", color: "#f45a58", text: "Statistically below expectation. You may be ranked too highly." },
+			{ min: -Infinity, title: "Exceptional Underperformance", color: "#ff3e3e", text: "Strong evidence you are ranked above your true skill." }
+		];
+
+        let roleCharts = { tank: null, dps: null, supp: null };
+        let syncTimer = 15 * 60;
+
+        function roundAway(num) { return num === 0 ? 0 : (num > 0 ? Math.ceil(num) : Math.floor(num)); }
+        function normalPDF(x, mu, sigma) { return (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2)); }
+
+        setInterval(() => {
+            if (document.getElementById('player-name').value) {
+                syncTimer--;
+                if (syncTimer <= 0) { syncAI(); syncTimer = 60 * 60; }
+                const mins = Math.floor(syncTimer / 60);
+                const secs = syncTimer % 60;
+                document.getElementById('next-sync-timer').innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+
+        async function syncAI() {
+            const name = document.getElementById('player-name').value.trim();
+            const id = document.getElementById('player-id').value.trim();
+            const syncBtn = document.getElementById('sync-button');
+            if (!name || !id) return;
+
+            syncBtn.disabled = true;
+            syncBtn.innerText = "Syncing...";
+            const playerId = `${name}-${id}`;
+            const apiUrl = `https://overfast-api.tekrop.fr/players/${playerId}/stats/summary?gamemode=competitive`;
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("API Error");
+                const data = await response.json();
+                const roleStats = data.roles;
+                
+                ['tank', 'damage', 'support'].forEach(apiRole => {
+                    const domRole = apiRole === 'damage' ? 'dps' : (apiRole === 'support' ? 'supp' : 'tank');
+                    const stats = roleStats[apiRole];
+                    if (stats) {
+                        const w = stats.games_won || 0;
+                        const l = stats.games_lost || 0;
+                        document.getElementById(`wins-${domRole}`).value = w;
+                        document.getElementById(`losses-${domRole}`).value = l;
+                        updateApp(domRole);
+                    }
+                });
+                document.getElementById('last-sync-time').innerText = new Date().toLocaleTimeString();
+                syncTimer = 60 * 60;
+            } catch (err) { 
+                console.error("Sync failed:", err); 
+                alert("Player not found or profile is private.");
+            } finally { 
+                syncBtn.disabled = false; 
+                syncBtn.innerText = "Sync Profile"; 
+            }
+        }
+
+        function simulateUntilTierChange(currentWins, currentLosses, direction) {
+            let sWins = currentWins; let sLosses = currentLosses;
+            const nStart = currentWins + currentLosses;
+            if (nStart === 0) return null;
+            const currentZ = (currentWins - (nStart * 0.5)) / Math.sqrt(nStart * 0.25);
+            const currentLevel = interpretationLevels.find(l => currentZ >= l.min);
+            let iterations = 0;
+            while (iterations < 10000) {
+                iterations++;
+                if (direction === 'up') sWins++; else sLosses++;
+                let n = sWins + sLosses;
+                let z = (sWins - (n * 0.5)) / Math.sqrt(n * 0.25);
+                let newLevel = interpretationLevels.find(l => z >= l.min);
+                if (newLevel.title !== currentLevel.title) return { level: newLevel, diff: iterations };
+            }
+            return null;
+        }
+
+        function updateApp(role) {
+			const wins = parseInt(document.getElementById(`wins-${role}`).value) || 0;
+			const losses = parseInt(document.getElementById(`losses-${role}`).value) || 0;
+			const n = wins + losses;
+			
+			const warnSpan = document.getElementById(`warn-${role}`);
+			if (n > 0 && n < 100) {
+				warnSpan.innerText = "(small sample size)";
+			} else {
+				warnSpan.innerText = "";
+			}
+			
+			if (n === 0) return;
+
+			const mu = n * 0.5; 
+			const sigma = Math.sqrt(n * 0.25); 
+			const z = (wins - mu) / sigma;
+
+			document.getElementById(`wr-${role}`).innerText = ((wins/n)*100).toFixed(1) + "%";
+			document.getElementById(`total-${role}`).innerText = n;
+			document.getElementById(`z-${role}`).innerText = Math.abs(z).toFixed(2);
+
+			// Find the correct performance level and color
+			const levelIndex = interpretationLevels.findIndex(l => z >= l.min);
+			const level = interpretationLevels[levelIndex];
+			
+			// Update the box styling and content
+			const box = document.getElementById(`interp-${role}`);
+			box.style.borderLeftColor = level.color; // Changes the vertical accent line color
+
+			box.innerHTML = `
+				<div style="width: 100%;">
+					<span class="proj-label-main">Current Standing</span>
+					<span class="header-text" style="color: ${level.color};">${level.title}</span>
+					<div style="font-size: 0.8rem; margin-top: 0; color: #ccc;">${level.text}</div>
+				</div>`;
+			
+			displayProjections(z, n, wins, losses, levelIndex, role);
+			renderChart(mu, sigma, wins, z, role);
+		}
+
+        function displayProjections(z, n, wins, losses, currentIndex, role) {
+            const container = document.getElementById(`projections-${role}`);
+            container.innerHTML = '<span class="proj-label-main">Threshold Projections</span>';
+            let hasNext = false;
+            if (currentIndex > 0) {
+                const up = simulateUntilTierChange(wins, losses, 'up');
+                if (up) {
+                    hasNext = true;
+					
+					// Match the color from your interpretationLevels array
+                    const targetLevel = interpretationLevels.find(l => l.title === up.level.title);
+                    const color = targetLevel ? targetLevel.color : '#fff';
+					
+                    const card = document.createElement('div'); card.className = 'projection-card';
+                    card.innerHTML = `<div class="tier-badge badge-next">Next</div><span class="up-diff">+${up.diff} Net Wins</span> for <i style="color: ${color};">${up.level.title}</i>`;
+                    container.appendChild(card);
+                }
+            }
+            const down = simulateUntilTierChange(wins, losses, 'down');
+            if (hasNext && down && currentIndex < interpretationLevels.length - 1) {
+                const divider = document.createElement('div'); divider.className = 'divider-line'; container.appendChild(divider);
+            }
+            if (currentIndex < interpretationLevels.length - 1 && down) {
+				const targetLevel = interpretationLevels.find(l => l.title === down.level.title);
+                const color = targetLevel ? targetLevel.color : '#fff';
+			
+                const card = document.createElement('div'); card.className = 'projection-card';
+                card.innerHTML = `<div class="tier-badge badge-prev">Previous</div><span class="down-diff">-${down.diff} Net Losses</span> for <i style="color: ${color};">${down.level.title}</i>`;
+                container.appendChild(card);
+            }
+        }
+
+        function renderChart(mu, sigma, userWins, z, role) {
+			const ctx = document.getElementById(`chart-${role}`).getContext('2d');
+			const absZ = Math.abs(z);
+			const scaleFactor = Math.max(2, roundAway(absZ));
+			const tickLevels = [-scaleFactor, -roundAway(scaleFactor / 2), 0, roundAway(scaleFactor / 2), scaleFactor];
+			
+			const start = mu - (scaleFactor + 1) * sigma;
+			const end = mu + (scaleFactor + 1) * sigma;
+			const dataPoints = [];
+			for (let i = start; i <= end; i += (end - start) / 100) {
+				dataPoints.push({ x: i, y: normalPDF(i, mu, sigma) });
+			}
+			
+			// 1. Calculate the peak of the curve (at the mean) and set max Y to 1.25x that value
+			const peakY = normalPDF(mu, mu, sigma);
+			const maxY = peakY * 1.25;
+
+			if (roleCharts[role]) roleCharts[role].destroy();
+
+			const annotations = {};
+			const userHeight = normalPDF(userWins, mu, sigma);
+
+			// Vertical Tick Lines (Bottom Layer)
+			tickLevels.forEach((lvl, index) => {
+				const xVal = mu + (lvl * sigma);
+				annotations['tick' + index] = {
+					type: 'line',
+					xMin: xVal,
+					xMax: xVal,
+					yMin: 0,
+					yMax: normalPDF(xVal, mu, sigma),
+					borderColor: 'rgba(102, 102, 102, 0.4)',
+					borderDash: [4, 4],
+					borderWidth: 1.5,
+					drawTime: 'beforeDraw'
+				};
+			});
+
+			// YOU vertical line and label
+			annotations['uLine'] = {
+				type: 'line',
+				xMin: userWins,
+				xMax: userWins,
+				yMin: 0,
+				yMax: userHeight,
+				borderColor: '#f06414',
+				borderWidth: 3,
+				drawTime: 'beforeDraw'
+			};
+
+			annotations['uBox'] = {
+				type: 'label',
+				xValue: userWins,
+				yValue: userHeight / 2,
+				content: 'YOU',
+				backgroundColor: '#f06414',
+				color: '#fff',
+				font: { weight: 'bold', size: 10 },
+				padding: 4,
+				drawTime: 'afterDatasetsDraw'
+			};
+
+			// 2. Std Dev labels with Boxes (Top Layer)
+			tickLevels.forEach((lvl, index) => {
+				const xVal = mu + (lvl * sigma);
+				annotations['lbl' + index] = {
+					type: 'label',
+					xValue: xVal,
+					yValue: normalPDF(xVal, mu, sigma),
+					content: (lvl > 0 ? '+' : '') + lvl + 'σ',
+					color: '#fff',
+					backgroundColor: 'rgba(0, 0, 0, .8)',
+					borderColor: 'rgba(0, 0, 0, .5)',
+					borderWidth: 1,
+					borderRadius: 4,
+					font: { size: 10, weight: 'bold' },
+					padding: 4,
+					yAdjust: -15,
+					drawTime: 'afterDraw'
+				};
+			});
+
+			roleCharts[role] = new Chart(ctx, {
+				type: 'scatter',
+				data: {
+					datasets: [{
+						type: 'line',
+						data: dataPoints,
+						borderColor: 'rgba(255,255,255,0.4)', // Bell Curve Line
+						fill: true,
+						backgroundColor: 'rgba(255, 255, 255, 0.05)',
+						pointRadius: 0,
+						borderWidth: 2,
+						tension: 0.4
+					}]
+				},
+				options: {
+					maintainAspectRatio: false,
+					scales: {
+						x: { type: 'linear', display: false, min: start, max: end },
+						y: { 
+							display: false, 
+							min: 0, 
+							max: maxY // 3. Apply the 1.25x peak height here
+						}
+					},
+					plugins: {
+						legend: { display: false },
+						annotation: { annotations }
+					}
+				}
+			});
+		}
+        
+        ['tank', 'dps', 'supp'].forEach(updateApp);
+        window.addEventListener('load', syncAI);
+    </script>
+</body>
+</html>
