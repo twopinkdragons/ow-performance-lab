@@ -123,6 +123,7 @@
                     <div><label>Total (n)</label><span id="total-tank" class="stat-val">0</span></div>
                     <div><label>Win Rate</label><span id="wr-tank" class="stat-val">0%</span></div>
                     <div><label>Z-Score (z)</label><span id="z-tank" class="stat-val">0.00</span></div>
+					<div><label>P-Value (p)</label><span id="p-tank" class="stat-val">0.00</span></div>
                 </div>
                 <div class="chart-wrapper"><canvas id="chart-tank"></canvas></div>
                 <div id="interp-tank" class="interpretation-box"></div>
@@ -141,6 +142,7 @@
                     <div><label>Total (n)</label><span id="total-dps" class="stat-val">0</span></div>
                     <div><label>Win Rate</label><span id="wr-dps" class="stat-val">0%</span></div>
                     <div><label>Z-Score (z)</label><span id="z-dps" class="stat-val">0.00</span></div>
+					<div><label>P-Value (p)</label><span id="p-dps" class="stat-val">0.00</span></div>
                 </div>
                 <div class="chart-wrapper"><canvas id="chart-dps"></canvas></div>
                 <div id="interp-dps" class="interpretation-box"></div>
@@ -159,6 +161,7 @@
                     <div><label>Total (n)</label><span id="total-supp" class="stat-val">0</span></div>
                     <div><label>Win Rate</label><span id="wr-supp" class="stat-val">0%</span></div>
                     <div><label>Z-Score (z)</label><span id="z-supp" class="stat-val">0.00</span></div>
+					<div><label>P-Value (p)</label><span id="p-supp" class="stat-val">0.00</span></div>
                 </div>
                 <div class="chart-wrapper"><canvas id="chart-supp"></canvas></div>
                 <div id="interp-supp" class="interpretation-box"></div>
@@ -234,6 +237,16 @@
                 syncBtn.innerText = "Sync Profile"; 
             }
         }
+		
+		// Standard Normal CDF approximation (Erf function)
+		function getPValue(z) {
+			const absZ = Math.abs(z);
+			// Standard approximation for the area under the normal curve
+			const t = 1 / (1 + 0.2316419 * absZ);
+			const d = 0.3989423 * Math.exp(-absZ * absZ / 2);
+			const prob = d * t * (0.3193815 + t * (-0.3565638 + t * (1.7814779 + t * (-1.821256 + t * 1.330274))));
+			return (2 * prob).toFixed(4); // Two-tailed p-value
+		}
 
         function simulateUntilTierChange(currentWins, currentLosses, direction) {
             let sWins = currentWins; let sLosses = currentLosses;
@@ -270,6 +283,10 @@
 			const mu = n * 0.5; 
 			const sigma = Math.sqrt(n * 0.25); 
 			const z = (wins - mu) / sigma;
+			
+			const pVal = getPValue(z);
+			const pDisplay = document.getElementById(`p-${role}`);
+			pDisplay.innerText = pVal;
 
 			document.getElementById(`wr-${role}`).innerText = ((wins/n)*100).toFixed(1) + "%";
 			document.getElementById(`total-${role}`).innerText = n;
