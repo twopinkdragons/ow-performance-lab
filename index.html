@@ -54,7 +54,7 @@
 
         .results-panel { background: rgba(0, 0, 0, 0.4); padding: 15px; border-radius: 4px; }
         .chart-wrapper { margin: 15px 0; background: #111; padding: 10px; border-radius: 4px; height: 180px; }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
         .stat-val { display: block; font-size: 1.1rem; font-weight: bold; color: #00aeff; }
         
         .interpretation-box { 
@@ -245,7 +245,7 @@
 			const t = 1 / (1 + 0.2316419 * absZ);
 			const d = 0.3989423 * Math.exp(-absZ * absZ / 2);
 			const prob = d * t * (0.3193815 + t * (-0.3565638 + t * (1.7814779 + t * (-1.821256 + t * 1.330274))));
-			return (2 * prob).toFixed(4); // Two-tailed p-value
+			return (2 * prob).toFixed(3); // Two-tailed p-value
 		}
 
         function simulateUntilTierChange(currentWins, currentLosses, direction) {
