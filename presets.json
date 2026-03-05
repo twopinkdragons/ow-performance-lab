@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-03-05T00:28:05.437Z",
+  "last_updated": "2026-03-05T03:24:42.609Z",
   "players": {
     "pinkdragons-1685": {
       "general": {
@@ -25,6 +25,28 @@
         }
       },
       "roles": {
+        "tank": {
+          "games_played": 54,
+          "games_won": 26,
+          "games_lost": 28,
+          "time_played": 34731,
+          "winrate": 48.15,
+          "kda": 4.88,
+          "total": {
+            "eliminations": 1259,
+            "assists": 54,
+            "deaths": 269,
+            "damage": 662099,
+            "healing": 99179
+          },
+          "average": {
+            "eliminations": 21.75,
+            "assists": 0.93,
+            "deaths": 4.65,
+            "damage": 11438.18,
+            "healing": 1713.38
+          }
+        },
         "damage": {
           "games_played": 234,
           "games_won": 119,
@@ -67,28 +89,6 @@
             "deaths": 4.98,
             "damage": 4538.9,
             "healing": 8740.34
-          }
-        },
-        "tank": {
-          "games_played": 54,
-          "games_won": 26,
-          "games_lost": 28,
-          "time_played": 34731,
-          "winrate": 48.15,
-          "kda": 4.88,
-          "total": {
-            "eliminations": 1259,
-            "assists": 54,
-            "deaths": 269,
-            "damage": 662099,
-            "healing": 99179
-          },
-          "average": {
-            "eliminations": 21.75,
-            "assists": 0.93,
-            "deaths": 4.65,
-            "damage": 11438.18,
-            "healing": 1713.38
           }
         }
       },
@@ -361,48 +361,70 @@
     },
     "HIBUTTOSHY-1965": {
       "general": {
-        "games_played": 328,
+        "games_played": 329,
         "games_won": 164,
-        "games_lost": 164,
-        "time_played": 204604,
-        "winrate": 50,
+        "games_lost": 165,
+        "time_played": 205143,
+        "winrate": 49.85,
         "kda": 2.27,
         "total": {
-          "eliminations": 5201,
+          "eliminations": 5212,
           "assists": 481,
-          "deaths": 2503,
-          "damage": 2710329,
-          "healing": 892121
+          "deaths": 2512,
+          "damage": 2719025,
+          "healing": 892171
         },
         "average": {
-          "eliminations": 15.25,
+          "eliminations": 15.24,
           "assists": 1.41,
-          "deaths": 7.34,
-          "damage": 7948.02,
-          "healing": 2616.14
+          "deaths": 7.35,
+          "damage": 7952.57,
+          "healing": 2609.41
         }
       },
       "roles": {
-        "damage": {
-          "games_played": 171,
-          "games_won": 82,
-          "games_lost": 89,
-          "time_played": 105689,
-          "winrate": 47.95,
-          "kda": 2.2,
+        "tank": {
+          "games_played": 56,
+          "games_won": 26,
+          "games_lost": 30,
+          "time_played": 35410,
+          "winrate": 46.43,
+          "kda": 2.86,
           "total": {
-            "eliminations": 3031,
-            "assists": 14,
-            "deaths": 1387,
-            "damage": 1615055,
-            "healing": 36153
+            "eliminations": 1093,
+            "assists": 78,
+            "deaths": 409,
+            "damage": 653212,
+            "healing": 30927
           },
           "average": {
-            "eliminations": 17.21,
+            "eliminations": 18.52,
+            "assists": 1.32,
+            "deaths": 6.93,
+            "damage": 11068.26,
+            "healing": 524.04
+          }
+        },
+        "damage": {
+          "games_played": 172,
+          "games_won": 82,
+          "games_lost": 90,
+          "time_played": 106228,
+          "winrate": 47.67,
+          "kda": 2.19,
+          "total": {
+            "eliminations": 3042,
+            "assists": 14,
+            "deaths": 1396,
+            "damage": 1623751,
+            "healing": 36203
+          },
+          "average": {
+            "eliminations": 17.18,
             "assists": 0.08,
-            "deaths": 7.87,
-            "damage": 9168.72,
-            "healing": 205.24
+            "deaths": 7.88,
+            "damage": 9171.32,
+            "healing": 204.48
           }
         },
         "support": {
@@ -425,28 +447,6 @@
             "deaths": 6.68,
             "damage": 4176.63,
             "healing": 7795.05
-          }
-        },
-        "tank": {
-          "games_played": 56,
-          "games_won": 26,
-          "games_lost": 30,
-          "time_played": 35410,
-          "winrate": 46.43,
-          "kda": 2.86,
-          "total": {
-            "eliminations": 1093,
-            "assists": 78,
-            "deaths": 409,
-            "damage": 653212,
-            "healing": 30927
-          },
-          "average": {
-            "eliminations": 18.52,
-            "assists": 1.32,
-            "deaths": 6.93,
-            "damage": 11068.26,
-            "healing": 524.04
           }
         }
       },
@@ -672,25 +672,25 @@
           }
         },
         "genji": {
-          "games_played": 37,
+          "games_played": 38,
           "games_won": 19,
-          "games_lost": 18,
-          "time_played": 23526,
-          "winrate": 51.35,
-          "kda": 2.49,
+          "games_lost": 19,
+          "time_played": 24065,
+          "winrate": 50,
+          "kda": 2.45,
           "total": {
-            "eliminations": 737,
+            "eliminations": 748,
             "assists": 0,
-            "deaths": 296,
-            "damage": 316843,
-            "healing": 8895
+            "deaths": 305,
+            "damage": 325539,
+            "healing": 8945
           },
           "average": {
-            "eliminations": 18.8,
+            "eliminations": 18.65,
             "assists": 0,
-            "deaths": 7.55,
-            "damage": 8080.67,
-            "healing": 226.86
+            "deaths": 7.6,
+            "damage": 8116.49,
+            "healing": 223.02
           }
         },
         "hanzo": {
