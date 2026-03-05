@@ -139,7 +139,7 @@
         </div>
         <div class="sync-info">
             Data Updated: <span id="time-since-update" class="timer-val">Calculating...</span> AGO<br>
-            Next API Call: <span id="next-cache-check" class="timer-val">--:--</span>
+            Next Cache Check: <span id="next-cache-check" class="timer-val">00:60</span>
         </div>
         <div class="window-selector">
             <label>Sample Window</label>
@@ -280,21 +280,7 @@
                 fetchCache();
                 localCheckTimer = 60;
             }
-            // Count down to next scheduled API run
-            const nextCheckEl = document.getElementById('next-cache-check');
-            if (cacheData.next_check) {
-                const msLeft = new Date(cacheData.next_check) - new Date();
-                if (msLeft <= 0) {
-                    nextCheckEl.innerText = 'Soon...';
-                } else {
-                    const totalSecs = Math.floor(msLeft / 1000);
-                    const mins = Math.floor(totalSecs / 60);
-                    const secs = totalSecs % 60;
-                    nextCheckEl.innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
-                }
-            } else {
-                nextCheckEl.innerText = '--:--';
-            }
+            document.getElementById('next-cache-check').innerText = `00:${localCheckTimer.toString().padStart(2, '0')}`;
         }, 1000);
 
         async function fetchCache() {

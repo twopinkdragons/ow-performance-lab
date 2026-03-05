@@ -128,7 +128,6 @@ async function updateCache() {
         }
 
         cache.last_checked = new Date().toISOString();
-        cache.next_check = new Date(Date.now() + 60 * 60 * 1000).toISOString();
         fs.writeFileSync('./presets.json', JSON.stringify(cache, null, 2));
         console.log('Cache Sync Complete.');
 
