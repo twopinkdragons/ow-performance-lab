@@ -1,5 +1,5 @@
 {
-  "last_checked": "2026-03-05T03:52:08.615Z",
+  "last_checked": "2026-03-05T05:09:16.395Z",
   "players": {
     "pinkdragons-1685": {
       "label": "pinkdragons",
@@ -24,7 +24,7 @@
     },
     "HIBUTTOSHY-1965": {
       "label": "HIBUTTOSHY",
-      "last_updated": "2026-03-05T03:30:49.719Z",
+      "last_updated": "2026-03-05T05:09:12.177Z",
       "roles": {
         "tank": {
           "batches": [],
@@ -32,8 +32,14 @@
           "last_total_l": 30
         },
         "dps": {
-          "batches": [],
-          "last_total_w": 82,
+          "batches": [
+            {
+              "w": 1,
+              "l": 0,
+              "ts": "2026-03-05T05:09:12.177Z"
+            }
+          ],
+          "last_total_w": 83,
           "last_total_l": 90
         },
         "supp": {
@@ -65,5 +71,5 @@
       }
     }
   },
-  "next_check": "2026-03-05T04:52:08.616Z"
+  "next_check": "2026-03-05T06:09:16.395Z"
 }
