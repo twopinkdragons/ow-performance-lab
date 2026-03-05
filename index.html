@@ -584,6 +584,11 @@
         }
 
         window.addEventListener('load', fetchCache);
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') fetchCache();
+        });
     </script>
 </body>
+
 </html>
