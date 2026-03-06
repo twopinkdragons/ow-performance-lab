@@ -144,9 +144,9 @@
         <div class="window-selector">
             <label>Sample Window</label>
             <div class="window-btn-group">
-                <button class="window-btn active" data-window="50" onclick="setWindow(50)">50</button>
-                <button class="window-btn" data-window="100" onclick="setWindow(100)">100</button>
-                <button class="window-btn" data-window="250" onclick="setWindow(250)">250</button>
+                <button class="window-btn active" data-window="50" onclick="setWindow(50)">≥ 50</button>
+                <button class="window-btn" data-window="100" onclick="setWindow(100)">≥ 100</button>
+                <button class="window-btn" data-window="250" onclick="setWindow(250)">≥ 250</button>
                 <button class="window-btn" data-window="0" onclick="setWindow(0)">All</button>
             </div>
         </div>
@@ -217,15 +217,15 @@
 
     <script>
         const interpretationLevels = [
-            { min: 2.58, title: "Exceptional Overperformance", color: "#00ff88", text: "Strong evidence you are ranked below your true skill." },
-            { min: 1.96, title: "Clear Overperformance", color: "#40f095", text: "Statistically above expectation. You may be ranked too lowly." },
-            { min: 1.65, title: "Probable Overperformance", color: "#5de09e", text: "You are meaningfully outperforming your current rank." },
-            { min: 1.0,  title: "Emerging Overperformance", color: "#74d0a4", text: "Early signs of positive deviation from rank expectations." },
-            { min: -1.0, title: "No Meaningful Signal", color: "#f06414", text: "Results fall within normal statistical variation." },
-            { min: -1.65, title: "Emerging Underperformance", color: "#d48484", text: "Early signs of negative deviation from rank expectations." },
-            { min: -1.96, title: "Probable Underperformance", color: "#e6716f", text: "You are meaningfully underperforming your current rank." },
-            { min: -2.58, title: "Clear Underperformance", color: "#f45a58", text: "Statistically below expectation. You may be ranked too highly." },
-            { min: -Infinity, title: "Exceptional Underperformance", color: "#ff3e3e", text: "Strong evidence you are ranked above your true skill." }
+            { min: 2.58, title: "Overperforming (≥ 99% Confidence)", color: "#00ff88", text: "Strong evidence you are ranked below your true skill." },
+            { min: 1.96, title: "Overperforming (≥ 95% Confidence)", color: "#40f095", text: "Statistically above expectation. You may be ranked too lowly." },
+            { min: 1.65, title: "Overperforming (≥ 90% Confidence)", color: "#5de09e", text: "You are meaningfully outperforming your current rank." },
+            { min: 1.28,  title: "Overperforming (≥ 80% Confidence)", color: "#74d0a4", text: "Early signs of positive deviation from rank expectations." },
+            { min: -1.28, title: "No Meaningful Signal", color: "#f06414", text: "Results fall within normal statistical variation." },
+            { min: -1.65, title: "Underperforming (≥ 80% Confidence)", color: "#d48484", text: "Early signs of negative deviation from rank expectations." },
+            { min: -1.96, title: "Underperforming (≥ 90% Confidence)", color: "#e6716f", text: "You are meaningfully underperforming your current rank." },
+            { min: -2.58, title: "Underperforming (≥ 95% Confidence)", color: "#f45a58", text: "Statistically below expectation. You may be ranked too highly." },
+            { min: -Infinity, title: "Underperforming (≥ 99% Confidence)", color: "#ff3e3e", text: "Strong evidence you are ranked above your true skill." }
         ];
 
         let roleCharts = { tank: null, dps: null, supp: null };
@@ -438,6 +438,7 @@
                     <span class="header-text" style="color: ${level.color};">${level.title}</span>
                     <div style="font-size: 0.8rem; margin-top: 0; color: #ccc;">${level.text}</div>
                     <div style="font-size: 0.75rem; margin-top: 5px; color: #555; font-style: italic; display: flex; justify-content: center; gap: 15px;"><span>H₀: π(win) = 0.50,</span><span>Hₐ: π(win) ≠ 0.50</span></div>
+                    ${warnSpan.innerText ? `<div style="font-size:0.75rem;color:${warnSpan.style.color};margin-top:6px;text-align:center"><b>${warnSpan.innerText}</b></div>` : ''}
                 </div>`;
 
             displayProjections(z, n, w, l, levelIndex, role);
