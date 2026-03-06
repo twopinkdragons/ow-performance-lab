@@ -217,15 +217,15 @@
 
     <script>
         const interpretationLevels = [
-            { min: 2.58, title: "Overperforming (≥ 99% Confidence)", color: "#00ff88", text: "Strong evidence you are ranked below your true skill." },
-            { min: 1.96, title: "Overperforming (≥ 95% Confidence)", color: "#40f095", text: "Statistically above expectation. You may be ranked too lowly." },
-            { min: 1.65, title: "Overperforming (≥ 90% Confidence)", color: "#5de09e", text: "You are meaningfully outperforming your current rank." },
-            { min: 1.28,  title: "Overperforming (≥ 80% Confidence)", color: "#74d0a4", text: "Early signs of positive deviation from rank expectations." },
+            { min: 2.58, title: "Overperforming (≥ 99% Confidence)", color: "#00ff88", text: "99% confidence that your true skill is above your current MMR." },
+            { min: 1.96, title: "Overperforming (≥ 95% Confidence)", color: "#40f095", text: "95% confidence that your true skill is above your current MMR." },
+            { min: 1.65, title: "Overperforming (≥ 90% Confidence)", color: "#5de09e", text: "90% confidence that your true skill is above your current MMR." },
+            { min: 1.28,  title: "Overperforming (≥ 80% Confidence)", color: "#74d0a4", text: "80% confidence that your true skill is above your current MMR." },
             { min: -1.28, title: "No Meaningful Signal", color: "#f06414", text: "Results fall within normal statistical variation." },
-            { min: -1.65, title: "Underperforming (≥ 80% Confidence)", color: "#d48484", text: "Early signs of negative deviation from rank expectations." },
-            { min: -1.96, title: "Underperforming (≥ 90% Confidence)", color: "#e6716f", text: "You are meaningfully underperforming your current rank." },
-            { min: -2.58, title: "Underperforming (≥ 95% Confidence)", color: "#f45a58", text: "Statistically below expectation. You may be ranked too highly." },
-            { min: -Infinity, title: "Underperforming (≥ 99% Confidence)", color: "#ff3e3e", text: "Strong evidence you are ranked above your true skill." }
+            { min: -1.65, title: "Underperforming (≥ 80% Confidence)", color: "#d48484", text: "80% confidence that your true skill is below your current MMR." },
+            { min: -1.96, title: "Underperforming (≥ 90% Confidence)", color: "#e6716f", text: "90% confidence that your true skill is below your current MMR." },
+            { min: -2.58, title: "Underperforming (≥ 95% Confidence)", color: "#f45a58", text: "95% confidence that your true skill is below your current MMR." },
+            { min: -Infinity, title: "Underperforming (≥ 99% Confidence)", color: "#ff3e3e", text: "99% confidence that your true skill is below your current MMR." }
         ];
 
         let roleCharts = { tank: null, dps: null, supp: null };
