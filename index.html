@@ -437,7 +437,7 @@
                     <span class="proj-label-main">Current Standing</span>
                     <span class="header-text" style="color: ${level.color};">${level.title}</span>
                     <div style="font-size: 0.8rem; margin-top: 0; color: #ccc;">${level.text}</div>
-                    <div style="font-size: 0.75rem; margin-top: 5px; color: #555; font-style: italic; display: flex; justify-content: center; gap: 15px;"><span>H₀: π(win) = 0.50,</span><span>Hₐ: π(win) ≠ 0.50</span></div>
+                    <div style="font-size: 0.75rem; margin-top: 5px; color: #555; font-style: italic; display: flex; justify-content: center; gap: 15px;"><span>${z >= 1.28 ? 'H₀: π(win) ≤ 0.50' : z <= -1.28 ? 'H₀: π(win) ≥ 0.50' : 'H₀: π(win) = 0.50'}</span><span>${z >= 1.28 ? 'Hₐ: π(win) > 0.50' : z <= -1.28 ? 'Hₐ: π(win) < 0.50' : 'Hₐ: π(win) ≠ 0.50'}</span></div>
                     ${warnSpan.innerText ? `<div style="font-size:0.75rem;color:${warnSpan.style.color};margin-top:6px;text-align:center"><b>${warnSpan.innerText}</b></div>` : ''}
                 </div>`;
 
