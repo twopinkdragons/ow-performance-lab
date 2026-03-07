@@ -1,9 +1,9 @@
 {
-  "last_checked": "2026-03-07T03:04:31.712Z",
+  "last_checked": "2026-03-07T04:49:37.305Z",
   "players": {
     "pinkdragons-1685": {
       "label": "pinkdragons",
-      "last_updated": "2026-03-06T09:06:13.719Z",
+      "last_updated": "2026-03-07T04:49:27.449Z",
       "roles": {
         "tank": {
           "batches": [
@@ -22,10 +22,15 @@
               "w": 4,
               "l": 0,
               "ts": "2026-03-06T09:06:13.719Z"
+            },
+            {
+              "w": 0,
+              "l": 1,
+              "ts": "2026-03-07T04:49:27.449Z"
             }
           ],
           "last_total_w": 123,
-          "last_total_l": 115
+          "last_total_l": 116
         },
         "supp": {
           "batches": [
@@ -38,16 +43,21 @@
               "w": -1,
               "l": 3,
               "ts": "2026-03-06T09:06:13.719Z"
+            },
+            {
+              "w": 2,
+              "l": 6,
+              "ts": "2026-03-07T04:49:27.449Z"
             }
           ],
-          "last_total_w": 132,
-          "last_total_l": 101
+          "last_total_w": 134,
+          "last_total_l": 107
         }
       }
     },
     "HIBUTTOSHY-1965": {
       "label": "HIBUTTOSHY",
-      "last_updated": "2026-03-06T06:08:15.946Z",
+      "last_updated": "2026-03-07T04:49:33.452Z",
       "roles": {
         "tank": {
           "batches": [],
@@ -71,15 +81,21 @@
           "last_total_l": 91
         },
         "supp": {
-          "batches": [],
-          "last_total_w": 56,
-          "last_total_l": 45
+          "batches": [
+            {
+              "w": 1,
+              "l": 3,
+              "ts": "2026-03-07T04:49:33.452Z"
+            }
+          ],
+          "last_total_w": 57,
+          "last_total_l": 48
         }
       }
     },
     "SilentSword-121730": {
       "label": "SilentSword",
-      "last_updated": "2026-03-05T03:30:52.462Z",
+      "last_updated": "2026-03-07T04:49:36.304Z",
       "roles": {
         "tank": {
           "batches": [],
@@ -92,12 +108,18 @@
           "last_total_l": 0
         },
         "supp": {
-          "batches": [],
+          "batches": [
+            {
+              "w": 0,
+              "l": 2,
+              "ts": "2026-03-07T04:49:36.304Z"
+            }
+          ],
           "last_total_w": 6,
-          "last_total_l": 10
+          "last_total_l": 12
         }
       }
     }
   },
-  "next_check": "2026-03-07T04:04:31.713Z"
+  "next_check": "2026-03-07T05:49:37.305Z"
 }
