@@ -1,5 +1,5 @@
 {
-  "last_checked": "2026-03-08T09:54:36.715Z",
+  "last_checked": "2026-03-08T10:54:28.413Z",
   "players": {
     "pinkdragons-1685": {
       "label": "pinkdragons",
@@ -77,7 +77,7 @@
     },
     "HIBUTTOSHY-1965": {
       "label": "HIBUTTOSHY",
-      "last_updated": "2026-03-08T04:59:31.819Z",
+      "last_updated": "2026-03-08T10:54:24.387Z",
       "roles": {
         "tank": {
           "batches": [],
@@ -100,10 +100,15 @@
               "w": 3,
               "l": 0,
               "ts": "2026-03-08T04:59:31.819Z"
+            },
+            {
+              "w": 0,
+              "l": 1,
+              "ts": "2026-03-08T10:54:24.387Z"
             }
           ],
           "last_total_w": 88,
-          "last_total_l": 91
+          "last_total_l": 92
         },
         "supp": {
           "batches": [
@@ -116,10 +121,15 @@
               "w": 8,
               "l": 1,
               "ts": "2026-03-08T04:59:31.819Z"
+            },
+            {
+              "w": 3,
+              "l": 3,
+              "ts": "2026-03-08T10:54:24.387Z"
             }
           ],
-          "last_total_w": 65,
-          "last_total_l": 49
+          "last_total_w": 68,
+          "last_total_l": 52
         }
       }
     },
@@ -151,5 +161,5 @@
       }
     }
   },
-  "next_check": "2026-03-08T10:54:36.715Z"
+  "next_check": "2026-03-08T11:54:28.413Z"
 }
