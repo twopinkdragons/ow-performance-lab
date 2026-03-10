@@ -1,9 +1,9 @@
 {
-  "last_checked": "2026-03-10T11:58:15.180Z",
+  "last_checked": "2026-03-10T13:46:08.979Z",
   "players": {
     "pinkdragons-1685": {
       "label": "pinkdragons",
-      "last_updated": "2026-03-10T03:13:35.033Z",
+      "last_updated": "2026-03-10T13:46:03.258Z",
       "roles": {
         "tank": {
           "batches": [
@@ -31,10 +31,15 @@
               "w": 1,
               "l": 0,
               "ts": "2026-03-10T03:13:35.032Z"
+            },
+            {
+              "w": 8,
+              "l": 5,
+              "ts": "2026-03-10T13:46:03.258Z"
             }
           ],
-          "last_total_w": 32,
-          "last_total_l": 32
+          "last_total_w": 40,
+          "last_total_l": 37
         },
         "dps": {
           "batches": [
@@ -67,10 +72,15 @@
               "w": 6,
               "l": 4,
               "ts": "2026-03-10T03:13:35.032Z"
+            },
+            {
+              "w": 9,
+              "l": 6,
+              "ts": "2026-03-10T13:46:03.258Z"
             }
           ],
-          "last_total_w": 136,
-          "last_total_l": 125
+          "last_total_w": 145,
+          "last_total_l": 131
         },
         "supp": {
           "batches": [
@@ -252,5 +262,5 @@
       }
     }
   },
-  "next_check": "2026-03-10T12:58:15.180Z"
+  "next_check": "2026-03-10T14:46:08.979Z"
 }
