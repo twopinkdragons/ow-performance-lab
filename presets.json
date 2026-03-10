@@ -1,9 +1,9 @@
 {
-  "last_checked": "2026-03-10T01:05:13.036Z",
+  "last_checked": "2026-03-10T03:13:42.051Z",
   "players": {
     "pinkdragons-1685": {
       "label": "pinkdragons",
-      "last_updated": "2026-03-09T13:48:51.660Z",
+      "last_updated": "2026-03-10T03:13:35.033Z",
       "roles": {
         "tank": {
           "batches": [
@@ -26,9 +26,14 @@
               "w": 0,
               "l": 2,
               "ts": "2026-03-09T06:39:01.714Z"
+            },
+            {
+              "w": 1,
+              "l": 0,
+              "ts": "2026-03-10T03:13:35.032Z"
             }
           ],
-          "last_total_w": 31,
+          "last_total_w": 32,
           "last_total_l": 32
         },
         "dps": {
@@ -57,10 +62,15 @@
               "w": 6,
               "l": 2,
               "ts": "2026-03-09T13:48:51.660Z"
+            },
+            {
+              "w": 6,
+              "l": 4,
+              "ts": "2026-03-10T03:13:35.032Z"
             }
           ],
-          "last_total_w": 130,
-          "last_total_l": 121
+          "last_total_w": 136,
+          "last_total_l": 125
         },
         "supp": {
           "batches": [
@@ -117,7 +127,7 @@
     },
     "HIBUTTOSHY-1965": {
       "label": "HIBUTTOSHY",
-      "last_updated": "2026-03-09T13:48:56.183Z",
+      "last_updated": "2026-03-10T03:13:39.183Z",
       "roles": {
         "tank": {
           "batches": [
@@ -130,10 +140,15 @@
               "w": 11,
               "l": 7,
               "ts": "2026-03-09T13:48:56.183Z"
+            },
+            {
+              "w": 1,
+              "l": 1,
+              "ts": "2026-03-10T03:13:39.183Z"
             }
           ],
-          "last_total_w": 39,
-          "last_total_l": 42
+          "last_total_w": 40,
+          "last_total_l": 43
         },
         "dps": {
           "batches": [
@@ -161,9 +176,14 @@
               "w": 5,
               "l": 6,
               "ts": "2026-03-09T13:48:56.183Z"
+            },
+            {
+              "w": 1,
+              "l": 0,
+              "ts": "2026-03-10T03:13:39.183Z"
             }
           ],
-          "last_total_w": 93,
+          "last_total_w": 94,
           "last_total_l": 98
         },
         "supp": {
@@ -222,5 +242,5 @@
       }
     }
   },
-  "next_check": "2026-03-10T02:05:13.036Z"
+  "next_check": "2026-03-10T04:13:42.051Z"
 }
