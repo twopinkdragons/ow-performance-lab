@@ -262,11 +262,19 @@
         }
 
         function formatTimeDiff(isoString) {
-            if (!isoString) return "0:00";
-            const diffMs = new Date() - new Date(isoString);
-            const diffMins = Math.floor(diffMs / 60000);
-            const diffSecs = Math.floor((diffMs % 60000) / 1000);
-            return `${diffMins}:${diffSecs.toString().padStart(2, '0')}`;
+            if (!isoString) return "0d 00h 00m";
+            const diffMs = Date.now() - new Date(isoString).getTime();
+            if (diffMs < 0) return "0d 00h 00m";
+
+            const totalMinutes = Math.floor(diffMs / 60000);
+            const days = Math.floor(totalMinutes / (60 * 24));
+            if (days >= 14) return "> 2w";
+
+            const minutesRemainder = totalMinutes % (60 * 24);
+            const hours = Math.floor(minutesRemainder / 60);
+            const minutes = minutesRemainder % 60;
+
+            return `${days}d ${hours}h ${minutes}m`;
         }
 
         setInterval(() => {
@@ -389,7 +397,7 @@
             const n = w + l;
 
             const warnSpan = document.getElementById(`warn-${role}`);
-            if (n > 0 && n < 100) {
+            if (n > 0 && n < 50) {
                 warnSpan.innerText = "(small sample size)";
             } else {
                 warnSpan.innerText = "";
