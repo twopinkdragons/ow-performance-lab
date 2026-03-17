@@ -1,9 +1,9 @@
 {
-  "last_checked": "2026-03-17T17:38:26.624Z",
+  "last_checked": "2026-03-17T19:37:29.315Z",
   "players": {
     "pinkdragons-1685": {
       "label": "pinkdragons",
-      "last_updated": "2026-03-17T03:20:28.699Z",
+      "last_updated": "2026-03-17T19:37:22.601Z",
       "roles": {
         "tank": {
           "batches": [
@@ -132,9 +132,14 @@
               "w": 11,
               "l": 4,
               "ts": "2026-03-17T03:20:28.699Z"
+            },
+            {
+              "w": 1,
+              "l": 0,
+              "ts": "2026-03-17T19:37:22.601Z"
             }
           ],
-          "last_total_w": 180,
+          "last_total_w": 181,
           "last_total_l": 161
         },
         "supp": {
@@ -357,5 +362,5 @@
       }
     }
   },
-  "next_check": "2026-03-17T18:38:26.624Z"
+  "next_check": "2026-03-17T20:37:29.315Z"
 }
