@@ -1,5 +1,5 @@
 {
-  "last_checked": "2026-04-01T03:53:56.022Z",
+  "last_checked": "2026-04-01T06:15:57.021Z",
   "players": {
     "pinkdragons-1685": {
       "label": "pinkdragons",
@@ -361,7 +361,7 @@
     },
     "SilentSword-121730": {
       "label": "SilentSword",
-      "last_updated": "2026-03-31T06:05:12.868Z",
+      "last_updated": "2026-04-01T06:15:56.021Z",
       "roles": {
         "tank": {
           "batches": [
@@ -369,10 +369,15 @@
               "w": 0,
               "l": 4,
               "ts": "2026-03-31T03:41:04.485Z"
+            },
+            {
+              "w": 0,
+              "l": 2,
+              "ts": "2026-04-01T06:15:56.020Z"
             }
           ],
           "last_total_w": 0,
-          "last_total_l": 4
+          "last_total_l": 6
         },
         "dps": {
           "batches": [
@@ -390,10 +395,15 @@
               "w": 0,
               "l": 1,
               "ts": "2026-03-31T06:05:12.868Z"
+            },
+            {
+              "w": 0,
+              "l": 2,
+              "ts": "2026-04-01T06:15:56.021Z"
             }
           ],
           "last_total_w": 8,
-          "last_total_l": 5
+          "last_total_l": 7
         },
         "supp": {
           "batches": [
@@ -426,13 +436,18 @@
               "w": 2,
               "l": 1,
               "ts": "2026-03-31T06:05:12.868Z"
+            },
+            {
+              "w": -1,
+              "l": 2,
+              "ts": "2026-04-01T06:15:56.021Z"
             }
           ],
-          "last_total_w": 14,
-          "last_total_l": 23
+          "last_total_w": 13,
+          "last_total_l": 25
         }
       }
     }
   },
-  "next_check": "2026-04-01T04:53:56.022Z"
+  "next_check": "2026-04-01T07:15:57.021Z"
 }
