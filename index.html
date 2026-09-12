@@ -1,11 +1,925 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Match Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #141A22;
+    --surface: #1D2530;
+    --surface-raised: #232C39;
+    --line: #2B3644;
+    --text: #E8ECF1;
+    --muted: #8B96A5;
+    --low: #c5784c;   /* Bronze, low end of full spectrum */
+    --high: #c77ff6;  /* Champion, high end of full spectrum */
+    --good: #6FBF8B;
+    --bad: #D9736B;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page{
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+  }
+
+  header.masthead{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .masthead h1{
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: 0.3px;
+    margin: 0;
+  }
+
+  .masthead .season{
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* ---- Form panel ---- */
+
+  .panel{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 28px 28px 24px;
+    position: relative;
+  }
+
+  .panel::before{
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--low), transparent 70%);
+    opacity: 0.5;
+    border-top-left-radius: 4px;
+    pointer-events: none;
+  }
+
+  .panel h2{
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--muted);
+    margin: 0 0 20px;
+    letter-spacing: 0.2px;
+  }
+
+  .field-row{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .field{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field label{
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  select, input[type="text"], input[type="number"], textarea{
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    padding: 10px 12px;
+    width: 100%;
+  }
+
+  select:focus, input:focus, textarea:focus{
+    outline: 2px solid #5FD9C7;
+    outline-offset: 1px;
+  }
+
+  /* ---- Rank readout ---- */
+
+  .rank-readout{
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+    padding: 16px 18px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    align-items: end;
+  }
+
+  .rank-readout .field label{ margin-bottom: 2px; }
+
+  .division-progress{
+    grid-column: 1 / -1;
+    margin-top: 4px;
+  }
+
+  .division-progress .meter{
+    height: 8px;
+    background: var(--line);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+
+  .division-progress .meter-fill{
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, var(--low), var(--high));
+  }
+
+  .division-progress .meter-label{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .percent-input-wrap{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .percent-input-wrap input{
+    flex: 1;
+    width: auto;
+  }
+
+  .percent-input-wrap span{
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .result-toggle{
+    display: flex;
+    gap: 8px;
+  }
+
+  .result-btn{
+    flex: 1;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .result-btn.active[data-result="Win"]{
+    background: rgba(0, 199, 7, 0.15);
+    border-color: #00c707;
+    color: #00c707;
+  }
+
+  .result-btn.active[data-result="Loss"]{
+    background: rgba(185, 14, 14, 0.15);
+    border-color: #b90e0e;
+    color: #b90e0e;
+  }
+
+  .result-btn.active[data-result="Tie"]{
+    background: rgba(154, 164, 178, 0.18);
+    border-color: #9aa4b2;
+    color: #9aa4b2;
+  }
+
+  /* ---- Comments ---- */
+
+  .comment-row{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+
+  .comment-field label{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dot{
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .dot.good{ background: var(--good); }
+  .dot.bad{ background: var(--bad); }
+
+  textarea{
+    resize: vertical;
+    min-height: 64px;
+  }
+
+  .save-row{
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  button.save{
+    background: #5FD9C7;
+    color: #0F1B1A;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 11px 22px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  button.save:hover{
+    filter: brightness(1.08);
+  }
+
+  /* ---- Graph section ---- */
+
+  .graph-section{
+    margin-top: 40px;
+  }
+
+  .graph-section .section-head{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .graph-section h2{
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .graph-section .legend{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .legend-swatch{
+    width: 90px;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #c5784c, #bcc1c7, #ebc463, #99cdbc, #11b477, #6ba5ef, #8fe35b, #8a70fd, #c77ff6);
+  }
+
+  .range-status{
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  /* ---- Range selector ---- */
+
+  .range-selector{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .range-btn{
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .range-btn.active{
+    background: #24313A;
+    border-color: #5FD9C7;
+    color: var(--text);
+  }
+
+  .range-custom-input{
+    width: 90px;
+    padding: 7px 10px;
+    font-size: 13px;
+    display: none;
+  }
+
+  .range-custom-input.visible{
+    display: inline-block;
+  }
+
+  .graph-panel{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 20px 16px 12px;
+  }
+
+  .graph-panel svg{
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .axis-label{
+    font-size: 10px;
+    fill: var(--muted);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .grid-line{
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+
+  .axis-line{
+    stroke: var(--muted);
+    stroke-width: 1.2;
+  }
+
+  .tick-major{
+    fill: var(--text);
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .tick-minor{
+    fill: var(--muted);
+    font-size: 9px;
+  }
+
+  .tick-mark-major{
+    stroke: var(--muted);
+    stroke-width: 1.2;
+  }
+
+  .tick-mark-minor{
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+
+  .point-tooltip{
+    position: fixed;
+    z-index: 1000;
+    display: none;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    color: var(--text);
+    pointer-events: none;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    white-space: nowrap;
+  }
+
+  .point-tooltip .tt-main{
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+
+  .point-tooltip .tt-sub{
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  @media (max-width: 560px){
+    .field-row, .comment-row{ grid-template-columns: 1fr; }
+    .rank-readout{ grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; }
+  }
+</style>
 </head>
 <body>
-    <h1>Hello World</h1>
+<div class="page">
+
+  <header class="masthead">
+    <h1>Match Log</h1>
+    <span class="season">Season 4</span>
+  </header>
+
+  <section class="panel" aria-labelledby="log-heading">
+    <h2 id="log-heading">Log a match</h2>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="map">Map</label>
+        <select id="map">
+          <option>King's Row</option>
+          <option>Hanamura</option>
+          <option>Ilios</option>
+          <option>Numbani</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="hero">Hero</label>
+        <select id="hero">
+          <option>Tracer</option>
+          <option>Winston</option>
+          <option>Ana</option>
+          <option>Reinhardt</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Result</label>
+        <div class="result-toggle" id="resultToggle">
+          <button type="button" class="result-btn active" data-result="Win">Win</button>
+          <button type="button" class="result-btn" data-result="Loss">Loss</button>
+          <button type="button" class="result-btn" data-result="Tie">Tie</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="rank-readout">
+      <div class="field">
+        <label for="rank">Rank</label>
+        <select id="rank">
+          <option>Bronze</option>
+          <option>Silver</option>
+          <option>Gold</option>
+          <option>Platinum</option>
+          <option>Emerald</option>
+          <option selected>Diamond</option>
+          <option>Master</option>
+          <option>Grandmaster</option>
+          <option>Champion</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="division">Division</label>
+        <select id="division">
+          <option>5</option>
+          <option>4</option>
+          <option selected>3</option>
+          <option>2</option>
+          <option>1</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="percentInput">Percent</label>
+        <div class="percent-input-wrap"><input type="number" id="percentInput" min="0" max="99" value="62"><span>%</span></div>
+      </div>
+
+      <div class="division-progress">
+        <div class="meter-label">
+          <span id="rangeStartLabel">Gold V</span>
+          <span id="rangeEndLabel">Progress to Platinum V</span>
+        </div>
+        <div class="meter"><div class="meter-fill" id="meterFill"></div></div>
+      </div>
+    </div>
+
+    <div class="comment-row">
+      <div class="field comment-field">
+        <label for="good"><span class="dot good"></span>What went well</label>
+        <textarea id="good" placeholder="Held the choke, good ult economy..."></textarea>
+      </div>
+      <div class="field comment-field">
+        <label for="bad"><span class="dot bad"></span>What went wrong</label>
+        <textarea id="bad" placeholder="Overextended twice, missed picks..."></textarea>
+      </div>
+    </div>
+
+    <div class="save-row">
+      <button class="save" id="saveMatchBtn" type="button">Save match</button>
+    </div>
+  </section>
+
+  <section class="graph-section" aria-labelledby="graph-heading">
+    <div class="section-head">
+      <h2 id="graph-heading">Rank progress</h2>
+      <div class="legend">
+        <span>Bronze</span>
+        <span class="legend-swatch"></span>
+        <span>Champion</span>
+      </div>
+    </div>
+
+    <div class="range-selector" id="rangeSelector">
+      <button class="range-btn active" data-range="50">Last 50</button>
+      <button class="range-btn" data-range="250">Last 250</button>
+      <button class="range-btn" data-range="500">Last 500</button>
+      <button class="range-btn" data-range="max">Max</button>
+      <button class="range-btn" data-range="custom">Custom</button>
+      <input type="number" id="customRangeInput" class="range-custom-input" min="1" placeholder="games" />
+    </div>
+
+    <div class="range-status" id="rangeStatus"></div>
+
+    <div class="graph-panel">
+      <svg id="rankSvg" viewBox="0 0 700 260" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+    <div class="point-tooltip" id="pointTooltip"></div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  // ---- Rank model ----
+  var TIERS = [
+    { name: "Bronze",      color: "#c5784c" },
+    { name: "Silver",      color: "#bcc1c7" },
+    { name: "Gold",        color: "#ebc463" },
+    { name: "Platinum",    color: "#99cdbc" },
+    { name: "Emerald",     color: "#11b477" },
+    { name: "Diamond",     color: "#6ba5ef" },
+    { name: "Master",      color: "#8fe35b" },
+    { name: "Grandmaster", color: "#8a70fd" },
+    { name: "Champion",    color: "#c77ff6" }
+  ];
+  var DIVISIONS_PER_TIER = 5;
+  var TOTAL_UNITS = TIERS.length * DIVISIONS_PER_TIER; // 45
+
+  // continuous scale value: 0 = Bronze 5 @ 0%, increases toward Champion
+  function valueOf(tierIdx, division, percent){
+    var dIdx = DIVISIONS_PER_TIER - division; // division5->0 ... division1->4
+    return tierIdx * DIVISIONS_PER_TIER + dIdx + (percent / 100);
+  }
+
+  function hexToRgb(hex){
+    var h = hex.replace('#','');
+    return {
+      r: parseInt(h.substring(0,2),16),
+      g: parseInt(h.substring(2,4),16),
+      b: parseInt(h.substring(4,6),16)
+    };
+  }
+
+  function lerpColor(hexA, hexB, t){
+    var a = hexToRgb(hexA), b = hexToRgb(hexB);
+    var r = Math.round(a.r + (b.r - a.r) * t);
+    var g = Math.round(a.g + (b.g - a.g) * t);
+    var bl = Math.round(a.b + (b.b - a.b) * t);
+    return 'rgb(' + r + ',' + g + ',' + bl + ')';
+  }
+
+  // color at a given continuous value, per the tier-to-tier interpolation rule
+  function colorAt(v){
+    v = Math.max(0, Math.min(v, TOTAL_UNITS - 1e-6));
+    var tierIdx = Math.min(Math.floor(v / DIVISIONS_PER_TIER), TIERS.length - 1);
+    if (tierIdx >= TIERS.length - 1){
+      return TIERS[TIERS.length - 1].color; // Champion: top of scale, nothing to blend into
+    }
+    var frac = (v - tierIdx * DIVISIONS_PER_TIER) / DIVISIONS_PER_TIER;
+    return lerpColor(TIERS[tierIdx].color, TIERS[tierIdx + 1].color, frac);
+  }
+
+  // human label for a continuous value, snapped to its division boundary (0%)
+  function labelAt(v){
+    v = Math.max(0, Math.min(v, TOTAL_UNITS));
+    var tierIdx = Math.min(Math.floor(v / DIVISIONS_PER_TIER), TIERS.length - 1);
+    var rem = v - tierIdx * DIVISIONS_PER_TIER;
+    var dIdx = Math.min(Math.floor(rem), DIVISIONS_PER_TIER - 1);
+    var division = DIVISIONS_PER_TIER - dIdx;
+    return TIERS[tierIdx].name + ' ' + division;
+  }
+
+  // ---- Seed match data (from logged games; new entries are appended via Save match) ----
+  var GOLD_IDX = TIERS.findIndex(function(t){ return t.name === 'Gold'; });
+  var ROMAN_TO_DIVISION = { I: 1, II: 2, III: 3, IV: 4, V: 5 };
+
+  var ALL_GAMES = [
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  8),  map: "Rialto",        mode: "Escort",     hero: "Tracer", result: "Win"  },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  -24), map: "Lijiang Tower", mode: "Control",    hero: "Tracer", result: "Loss" },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 36), map: "Esperança",     mode: "Push",       hero: "Tracer", result: "Loss" },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 65), map: "Route 66",      mode: "Escort",     hero: "Tracer", result: "Win"  },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 34), map: "Suravasa",      mode: "Flashpoint", hero: "Echo",   result: "Loss" }
+  ];
+
+  function romanDivision(d){
+    return ['', 'I', 'II', 'III', 'IV', 'V'][d] || d;
+  }
+
+  // How many divisions Gold 3 -> Master 3 spans. At this wide a range or
+  // wider, individual division sub-ticks get hidden; only tier names show.
+  var GOLD_TO_MASTER_SPAN = valueOf(TIERS.findIndex(function(t){ return t.name === 'Master'; }), 3, 0)
+                           - valueOf(TIERS.findIndex(function(t){ return t.name === 'Gold'; }), 3, 0);
+
+  function pointInfo(v){
+    v = Math.max(0, Math.min(v, TOTAL_UNITS));
+    var tierIdx = Math.min(Math.floor(v / DIVISIONS_PER_TIER), TIERS.length - 1);
+    var rem = v - tierIdx * DIVISIONS_PER_TIER;
+    var dIdx = Math.min(Math.floor(rem), DIVISIONS_PER_TIER - 1);
+    return {
+      tier: TIERS[tierIdx].name,
+      division: DIVISIONS_PER_TIER - dIdx,
+      percent: Math.round((rem - dIdx) * 100)
+    };
+  }
+
+  var ABBR = { Bronze:'B', Silver:'S', Gold:'G', Platinum:'P', Emerald:'E', Diamond:'D', Master:'M', Grandmaster:'GM', Champion:'C' };
+  var RESULT_COLORS = { Win: '#00c707', Loss: '#b90e0e', Tie: '#9aa4b2' };
+
+  // Abbreviated axis tick label. Every tier's start (division 5, 0%) gets the
+  // plain letter (e.g. "GM"). Everywhere else (minor division ticks, and the
+  // one special case of the scale's absolute top, e.g. "C1") gets the letter
+  // plus the roman-numeral division.
+  function abbrLabelAt(t){
+    var full = labelAt(t); // "TierName Division"
+    var sp = full.lastIndexOf(' ');
+    var tierName = full.substring(0, sp);
+    var division = parseInt(full.substring(sp + 1), 10);
+    var abbr = ABBR[tierName] || tierName;
+    var isTierStart = (t % DIVISIONS_PER_TIER === 0) && (t < TOTAL_UNITS);
+    return isTierStart ? abbr : (abbr + division);
+  }
+
+  // ---- Match log form: result toggle + live progress entry ----
+  var resultToggle = document.getElementById('resultToggle');
+  resultToggle.addEventListener('click', function(e){
+    var btn = e.target.closest('.result-btn');
+    if (!btn) return;
+    Array.prototype.forEach.call(resultToggle.querySelectorAll('.result-btn'), function(b){
+      b.classList.remove('active');
+    });
+    btn.classList.add('active');
+  });
+
+  var rankSelect = document.getElementById('rank');
+  var divisionSelect = document.getElementById('division');
+  var percentInput = document.getElementById('percentInput');
+  var meterFill = document.getElementById('meterFill');
+  var rangeStartLabel = document.getElementById('rangeStartLabel');
+  var rangeEndLabel = document.getElementById('rangeEndLabel');
+
+  // The meter now spans the whole current tier: 0% of division V through
+  // 99% of division I. Position and gradient are both derived from that.
+  function updateMeter(){
+    var tierIdx = TIERS.findIndex(function(t){ return t.name === rankSelect.value; });
+    var division = parseInt(divisionSelect.value, 10);
+    var pct = parseInt(percentInput.value, 10);
+    if (isNaN(pct)) pct = 0;
+    pct = Math.max(0, Math.min(99, pct));
+    percentInput.value = pct;
+
+    var dIdx = DIVISIONS_PER_TIER - division; // division 5 -> 0 ... division 1 -> 4
+    var tierPos = (dIdx + pct / 100) / DIVISIONS_PER_TIER; // 0..1 across the whole tier
+
+    var hasNextTier = tierIdx < TIERS.length - 1;
+    var endColor = hasNextTier ? TIERS[tierIdx + 1].color : TIERS[tierIdx].color;
+    // The gradient always spans the full tier (bottom of V to top of I).
+    // Only the portion up to the current position is revealed, so a low
+    // position shows barely any blend and a high position shows almost
+    // the full blend toward the next tier's color — same idea as the graph.
+    meterFill.style.width = '100%';
+    meterFill.style.background = 'linear-gradient(90deg, ' + TIERS[tierIdx].color + ', ' + endColor + ')';
+    meterFill.style.clipPath = 'inset(0 ' + (100 - tierPos * 100) + '% 0 0)';
+
+    rangeStartLabel.textContent = TIERS[tierIdx].name + ' V';
+    rangeEndLabel.textContent = 'Progress to ' + (hasNextTier ? TIERS[tierIdx + 1].name + ' V' : TIERS[tierIdx].name + ' I (top rank)');
+  }
+
+  rankSelect.addEventListener('change', updateMeter);
+  divisionSelect.addEventListener('change', updateMeter);
+  percentInput.addEventListener('input', updateMeter);
+
+  updateMeter();
+
+  // ---- Save match: append the current form's entry as a new graph point ----
+  var mapSelect = document.getElementById('map');
+  var heroSelect = document.getElementById('hero');
+  var saveMatchBtn = document.getElementById('saveMatchBtn');
+
+  saveMatchBtn.addEventListener('click', function(){
+    var activeResultBtn = resultToggle.querySelector('.result-btn.active');
+    var result = activeResultBtn ? activeResultBtn.getAttribute('data-result') : 'Win';
+    var tierIdx = TIERS.findIndex(function(t){ return t.name === rankSelect.value; });
+    var division = parseInt(divisionSelect.value, 10);
+    var pct = parseInt(percentInput.value, 10);
+    if (isNaN(pct)) pct = 0;
+
+    ALL_GAMES.push({
+      v: valueOf(tierIdx, division, pct),
+      map: mapSelect.value,
+      hero: heroSelect.value,
+      result: result
+    });
+
+    render();
+  });
+
+  // ---- Range selection state ----
+  var selectedRange = { type: 'last', n: 250 };
+
+  var rangeSelector = document.getElementById('rangeSelector');
+  var customInput = document.getElementById('customRangeInput');
+
+  rangeSelector.addEventListener('click', function(e){
+    var btn = e.target.closest('.range-btn');
+    if (!btn) return;
+    Array.prototype.forEach.call(rangeSelector.querySelectorAll('.range-btn'), function(b){
+      b.classList.remove('active');
+    });
+    btn.classList.add('active');
+
+    var r = btn.getAttribute('data-range');
+    if (r === 'max'){
+      selectedRange = { type: 'max' };
+      customInput.classList.remove('visible');
+    } else if (r === 'custom'){
+      customInput.classList.add('visible');
+      var n = parseInt(customInput.value, 10);
+      selectedRange = { type: 'last', n: (n > 0 ? n : ALL_GAMES.length) };
+      customInput.focus();
+    } else {
+      customInput.classList.remove('visible');
+      selectedRange = { type: 'last', n: parseInt(r, 10) };
+    }
+    render();
+  });
+
+  customInput.addEventListener('change', function(){
+    var n = parseInt(customInput.value, 10);
+    if (!(n > 0)) n = ALL_GAMES.length;
+    n = Math.min(n, ALL_GAMES.length);
+    selectedRange = { type: 'last', n: n };
+    render();
+  });
+
+  function getSelectedGames(){
+    if (selectedRange.type === 'max') return ALL_GAMES.slice();
+    var n = Math.min(selectedRange.n, ALL_GAMES.length);
+    return ALL_GAMES.slice(ALL_GAMES.length - n);
+  }
+
+  // ---- Rendering ----
+  var svg = document.getElementById('rankSvg');
+  var statusEl = document.getElementById('rangeStatus');
+  var tooltipEl = document.getElementById('pointTooltip');
+
+  var CHART_LEFT = 44, CHART_RIGHT = 680, CHART_TOP = 20, CHART_BOTTOM = 220;
+
+  function render(){
+    var games = getSelectedGames();
+    var values = games.map(function(g){ return g.v; });
+    var vMin = Math.min.apply(null, values);
+    var vMax = Math.max.apply(null, values);
+
+    // Auto-zoom: show the 0% mark of the lowest division present,
+    // and the 0% mark of one division above the highest division present.
+    var axisMin = Math.floor(vMin);
+    var axisMax = Math.min(Math.floor(vMax) + 1, TOTAL_UNITS);
+    if (axisMax <= axisMin) axisMax = axisMin + 1;
+
+    // Once the range is wide enough to hide individual divisions, pad both
+    // ends out to their tier's boundary for framing (e.g. a bottom at
+    // Gold III extends down to show Gold V; a top at Master III extends up
+    // to show Grandmaster V).
+    var showMinorTicks = (axisMax - axisMin) < GOLD_TO_MASTER_SPAN;
+    if (!showMinorTicks){
+      axisMin = Math.floor(axisMin / DIVISIONS_PER_TIER) * DIVISIONS_PER_TIER;
+      var nextTierStart = (Math.floor(axisMax / DIVISIONS_PER_TIER) + 1) * DIVISIONS_PER_TIER;
+      axisMax = Math.min(nextTierStart, TOTAL_UNITS);
+    }
+
+    var span = axisMax - axisMin;
+
+    function yFor(v){
+      var f = (v - axisMin) / span;
+      return CHART_BOTTOM - f * (CHART_BOTTOM - CHART_TOP);
+    }
+    function xFor(i, n){
+      if (n <= 1) return (CHART_LEFT + CHART_RIGHT) / 2;
+      return CHART_LEFT + (i / (n - 1)) * (CHART_RIGHT - CHART_LEFT);
+    }
+
+    var n = games.length;
+    var points = games.map(function(g, i){
+      var info = pointInfo(g.v);
+      var tooltip = info.tier + ' ' + romanDivision(info.division) + ': ' + info.percent + '% (' + g.result + ')|' + g.hero + ' \u2014 ' + g.map;
+      return { x: xFor(i, n), y: yFor(g.v), color: colorAt(g.v), result: g.result, tooltip: tooltip };
+    });
+
+    var parts = [];
+    parts.push('<defs>');
+    for (var i = 0; i < points.length - 1; i++){
+      var p1 = points[i], p2 = points[i+1];
+      parts.push(
+        '<linearGradient id="seg-grad-' + i + '" gradientUnits="userSpaceOnUse" x1="' + p1.x + '" y1="' + p1.y + '" x2="' + p2.x + '" y2="' + p2.y + '">' +
+        '<stop offset="0%" stop-color="' + p1.color + '"/>' +
+        '<stop offset="100%" stop-color="' + p2.color + '"/>' +
+        '</linearGradient>'
+      );
+    }
+    parts.push('</defs>');
+
+    // gridlines + ticks: major = tier boundary, minor = division boundary.
+    // Minor ticks are hidden once the visible span is as wide as Gold 3 -> Master 3.
+    // The absolute top of the whole scale (only reachable inside Champion) gets
+    // no tick or label at all — there's no rank above it to name.
+    for (var t = axisMin; t <= axisMax; t++){
+      if (t === TOTAL_UNITS) continue;
+      var gy = yFor(t);
+      var isTierBoundary = (t % DIVISIONS_PER_TIER === 0);
+      if (isTierBoundary){
+        parts.push('<line class="grid-line" x1="' + CHART_LEFT + '" y1="' + gy + '" x2="' + CHART_RIGHT + '" y2="' + gy + '" stroke-dasharray="2,4"/>');
+        parts.push('<line class="tick-mark-major" x1="' + (CHART_LEFT - 6) + '" y1="' + gy + '" x2="' + CHART_LEFT + '" y2="' + gy + '"/>');
+        parts.push('<text class="tick-major" x="' + (CHART_LEFT - 10) + '" y="' + (gy + 3) + '" text-anchor="end">' + abbrLabelAt(t) + '</text>');
+      } else if (showMinorTicks){
+        parts.push('<line class="tick-mark-minor" x1="' + (CHART_LEFT - 3) + '" y1="' + gy + '" x2="' + CHART_LEFT + '" y2="' + gy + '"/>');
+        parts.push('<text class="tick-minor" x="' + (CHART_LEFT - 10) + '" y="' + (gy + 3) + '" text-anchor="end">' + abbrLabelAt(t) + '</text>');
+      }
+    }
+
+    parts.push('<line class="axis-line" x1="' + CHART_LEFT + '" y1="' + CHART_TOP + '" x2="' + CHART_LEFT + '" y2="' + CHART_BOTTOM + '"/>');
+    parts.push('<line class="axis-line" x1="' + CHART_LEFT + '" y1="' + CHART_BOTTOM + '" x2="' + CHART_RIGHT + '" y2="' + CHART_BOTTOM + '"/>');
+
+    for (var i = 0; i < points.length - 1; i++){
+      var p1 = points[i], p2 = points[i+1];
+      parts.push('<line x1="' + p1.x + '" y1="' + p1.y + '" x2="' + p2.x + '" y2="' + p2.y + '" stroke="url(#seg-grad-' + i + ')" stroke-width="2.5" stroke-linecap="round"/>');
+    }
+
+    // points: visible fill dot when few enough to read; always hoverable.
+    // No border here — win/loss shows on the tooltip instead.
+    var showDots = points.length <= 120;
+    points.forEach(function(p){
+      parts.push(
+        '<circle cx="' + p.x + '" cy="' + p.y + '" r="' + (showDots ? 3 : 5) + '" ' +
+        'fill="' + (showDots ? p.color : 'transparent') + '" ' +
+        'pointer-events="all" data-tooltip="' + p.tooltip.replace(/"/g, '&quot;') + '" data-color="' + p.color + '" data-result="' + p.result + '"/>'
+      );
+    });
+
+    svg.innerHTML = parts.join('');
+
+    statusEl.textContent = n + (n === 1 ? ' game' : ' games') + ' shown \u00b7 ' + labelAt(axisMin) + ' \u2013 ' + labelAt(axisMax) + ' visible range';
+  }
+
+  svg.addEventListener('pointermove', function(e){
+    var target = e.target;
+    if (target && target.hasAttribute && target.hasAttribute('data-tooltip')){
+      var parts2 = target.getAttribute('data-tooltip').split('|');
+      var ptColor = target.getAttribute('data-color');
+      var result = target.getAttribute('data-result');
+      var resultColor = RESULT_COLORS[result] || RESULT_COLORS.Win;
+      tooltipEl.style.borderColor = resultColor;
+      tooltipEl.innerHTML = '<div class="tt-main" style="color:' + ptColor + '">' + parts2[0] + '</div><div class="tt-sub">' + (parts2[1] || '') + '</div>';
+      tooltipEl.style.display = 'block';
+      tooltipEl.style.left = (e.clientX + 14) + 'px';
+      tooltipEl.style.top = (e.clientY + 14) + 'px';
+    } else {
+      tooltipEl.style.display = 'none';
+    }
+  });
+
+  svg.addEventListener('pointerleave', function(){
+    tooltipEl.style.display = 'none';
+  });
+
+  render();
+})();
+</script>
 </body>
 </html>
