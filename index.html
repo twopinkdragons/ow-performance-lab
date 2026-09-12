@@ -42,9 +42,15 @@
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    margin-bottom: 36px;
+    margin-bottom: 20px;
     padding-bottom: 20px;
     border-bottom: 1px solid var(--line);
+  }
+
+  .masthead-title{
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
   }
 
   .masthead h1{
@@ -57,6 +63,53 @@
 
   .masthead .season{
     color: var(--muted);
+    font-size: 13px;
+  }
+
+  .github-status{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .github-dot{
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    background: var(--muted);
+  }
+
+  .github-dot.ok{ background: #00c707; }
+  .github-dot.error{ background: #b90e0e; }
+
+  .mini-btn{
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .github-token-row{
+    display: none;
+    gap: 8px;
+    margin: 0 0 24px;
+    justify-content: flex-end;
+  }
+
+  .github-token-row.visible{
+    display: flex;
+  }
+
+  .github-token-row input{
+    width: 300px;
+    padding: 8px 10px;
     font-size: 13px;
   }
 
@@ -442,9 +495,21 @@
 <div class="page">
 
   <header class="masthead">
-    <h1>Match Log</h1>
-    <span class="season">Season 4</span>
+    <div class="masthead-title">
+      <h1>Match Log</h1>
+      <span class="season">Season 12</span>
+    </div>
+    <div class="github-status" id="githubStatus">
+      <span class="github-dot off" id="githubDot"></span>
+      <span id="githubStatusText">Not connected</span>
+      <button type="button" id="githubConnectBtn" class="mini-btn">Connect</button>
+    </div>
   </header>
+
+  <div class="github-token-row" id="githubTokenRow">
+    <input type="password" id="githubTokenInput" placeholder="Paste fine-grained GitHub token">
+    <button type="button" id="githubTokenSave" class="mini-btn">Save token</button>
+  </div>
 
   <section class="panel" aria-labelledby="log-heading">
     <h2 id="log-heading">Log a match</h2>
@@ -547,8 +612,8 @@
     </div>
 
     <div class="range-selector" id="rangeSelector">
-      <button class="range-btn active" data-range="50">Last 50</button>
-      <button class="range-btn" data-range="250">Last 250</button>
+      <button class="range-btn" data-range="50">Last 50</button>
+      <button class="range-btn active" data-range="250">Last 250</button>
       <button class="range-btn" data-range="500">Last 500</button>
       <button class="range-btn" data-range="max">Max</button>
       <button class="range-btn" data-range="custom">Custom</button>
@@ -637,6 +702,95 @@
     { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 65), map: "Route 66",      mode: "Escort",     hero: "Tracer", result: "Win"  },
     { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 34), map: "Suravasa",      mode: "Flashpoint", hero: "Echo",   result: "Loss" }
   ];
+  // ^ Local fallback shown until a GitHub connection loads the real data
+  // (or if the person never connects at all).
+
+  // ---- GitHub persistence ----
+  var GH_OWNER = 'twopinkdragons';
+  var GH_REPO = 'ow-performance-lab';
+  var GH_PATH = 'matches.json';
+  var GH_TOKEN_KEY = 'owPerfLabGhToken';
+  var ghCurrentSha = null;
+
+  function ghGetToken(){ return localStorage.getItem(GH_TOKEN_KEY) || ''; }
+  function ghSetToken(t){ localStorage.setItem(GH_TOKEN_KEY, t); }
+
+  function b64EncodeUnicode(str){ return btoa(unescape(encodeURIComponent(str))); }
+  function b64DecodeUnicode(str){ return decodeURIComponent(escape(atob(str))); }
+
+  function ghApiUrl(){
+    return 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_PATH;
+  }
+
+  function ghFetchMatches(){
+    var token = ghGetToken();
+    return fetch(ghApiUrl(), {
+      headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' }
+    }).then(function(res){
+      if (!res.ok) throw new Error('GitHub fetch failed (' + res.status + ')');
+      return res.json();
+    }).then(function(data){
+      ghCurrentSha = data.sha;
+      var text = b64DecodeUnicode(data.content.replace(/\n/g, ''));
+      var parsed = JSON.parse(text || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    });
+  }
+
+  function ghSaveMatches(records, message){
+    var token = ghGetToken();
+    var encoded = b64EncodeUnicode(JSON.stringify(records, null, 2));
+    return fetch(ghApiUrl(), {
+      method: 'PUT',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        Accept: 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message: message, content: encoded, sha: ghCurrentSha })
+    }).then(function(res){
+      if (!res.ok){
+        return res.json().then(function(err){
+          throw new Error(err && err.message ? err.message : ('GitHub save failed (' + res.status + ')'));
+        });
+      }
+      return res.json();
+    }).then(function(result){
+      ghCurrentSha = result.content.sha;
+      return result;
+    });
+  }
+
+  // A saved record stores the source-of-truth fields (rank name, division
+  // number, percent) rather than the derived continuous value.
+  function recordToGame(rec){
+    var tierIdx = TIERS.findIndex(function(t){ return t.name === rec.rank; });
+    if (tierIdx < 0) tierIdx = 0;
+    return {
+      v: valueOf(tierIdx, rec.division, rec.percent),
+      map: rec.map,
+      mode: rec.mode,
+      hero: rec.hero,
+      result: rec.result,
+      goodComment: rec.goodComment || '',
+      badComment: rec.badComment || ''
+    };
+  }
+
+  function gameToRecord(g){
+    var info = pointInfo(g.v);
+    return {
+      map: g.map,
+      mode: g.mode,
+      hero: g.hero,
+      result: g.result,
+      rank: info.tier,
+      division: info.division,
+      percent: info.percent,
+      goodComment: g.goodComment || '',
+      badComment: g.badComment || ''
+    };
+  }
 
   function romanDivision(d){
     return ['', 'I', 'II', 'III', 'IV', 'V'][d] || d;
@@ -727,12 +881,73 @@
 
   updateMeter();
 
-  // ---- Save match: append the current form's entry as a new graph point ----
+  // ---- GitHub connect/status UI ----
+  var githubStatusText = document.getElementById('githubStatusText');
+  var githubDot = document.getElementById('githubDot');
+  var githubConnectBtn = document.getElementById('githubConnectBtn');
+  var githubTokenRow = document.getElementById('githubTokenRow');
+  var githubTokenInput = document.getElementById('githubTokenInput');
+  var githubTokenSave = document.getElementById('githubTokenSave');
+
+  function setGithubStatus(state, text){
+    githubStatusText.textContent = text;
+    githubDot.className = 'github-dot' + (state ? ' ' + state : '');
+  }
+
+  githubConnectBtn.addEventListener('click', function(){
+    githubTokenRow.classList.toggle('visible');
+    if (githubTokenRow.classList.contains('visible')) githubTokenInput.focus();
+  });
+
+  function submitGithubToken(){
+    var t = githubTokenInput.value.trim();
+    if (!t) return;
+    ghSetToken(t);
+    githubTokenInput.value = '';
+    githubTokenRow.classList.remove('visible');
+    loadFromGithub();
+  }
+
+  githubTokenSave.addEventListener('click', submitGithubToken);
+  githubTokenInput.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') submitGithubToken();
+  });
+
+  function loadFromGithub(){
+    if (!ghGetToken()){
+      setGithubStatus('', 'Not connected');
+      githubConnectBtn.textContent = 'Connect';
+      return;
+    }
+    setGithubStatus('', 'Loading…');
+    ghFetchMatches().then(function(records){
+      ALL_GAMES = records.map(recordToGame);
+      setGithubStatus('ok', 'Synced');
+      githubConnectBtn.textContent = 'Reconnect';
+      render();
+    }).catch(function(err){
+      setGithubStatus('error', 'Connection error');
+      console.error(err);
+    });
+  }
+
+  loadFromGithub();
+
+  // ---- Save match: push the current form's entry to GitHub, then graph it ----
   var mapSelect = document.getElementById('map');
   var heroSelect = document.getElementById('hero');
   var saveMatchBtn = document.getElementById('saveMatchBtn');
+  var goodTextarea = document.getElementById('good');
+  var badTextarea = document.getElementById('bad');
 
   saveMatchBtn.addEventListener('click', function(){
+    if (!ghGetToken()){
+      setGithubStatus('error', 'Connect GitHub to save');
+      githubTokenRow.classList.add('visible');
+      githubTokenInput.focus();
+      return;
+    }
+
     var activeResultBtn = resultToggle.querySelector('.result-btn.active');
     var result = activeResultBtn ? activeResultBtn.getAttribute('data-result') : 'Win';
     var tierIdx = TIERS.findIndex(function(t){ return t.name === rankSelect.value; });
@@ -740,14 +955,37 @@
     var pct = parseInt(percentInput.value, 10);
     if (isNaN(pct)) pct = 0;
 
-    ALL_GAMES.push({
+    var newGame = {
       v: valueOf(tierIdx, division, pct),
       map: mapSelect.value,
       hero: heroSelect.value,
-      result: result
-    });
+      result: result,
+      goodComment: goodTextarea.value,
+      badComment: badTextarea.value
+    };
 
-    render();
+    saveMatchBtn.disabled = true;
+    saveMatchBtn.textContent = 'Saving\u2026';
+    setGithubStatus('', 'Saving\u2026');
+
+    // Re-fetch right before writing so the save is against the current
+    // file, not a possibly-stale sha from page load.
+    ghFetchMatches().then(function(records){
+      records.push(gameToRecord(newGame));
+      return ghSaveMatches(records, 'Log match: ' + newGame.map + ' (' + result + ')');
+    }).then(function(){
+      ALL_GAMES.push(newGame);
+      render();
+      goodTextarea.value = '';
+      badTextarea.value = '';
+      setGithubStatus('ok', 'Synced');
+    }).catch(function(err){
+      setGithubStatus('error', 'Save failed');
+      console.error(err);
+    }).then(function(){
+      saveMatchBtn.disabled = false;
+      saveMatchBtn.textContent = 'Save match';
+    });
   });
 
   // ---- Range selection state ----
