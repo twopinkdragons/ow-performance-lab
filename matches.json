@@ -48,5 +48,25 @@
     "percent": 34,
     "goodComment": "",
     "badComment": "Landed in front of people often"
+  },
+  {
+    "map": "Aatlis",
+    "hero": "Torbjörn",
+    "result": "Win",
+    "rank": "Emerald",
+    "division": 3,
+    "percent": 24,
+    "goodComment": "",
+    "badComment": ""
+  },
+  {
+    "map": "Aatlis",
+    "hero": "Torbjörn",
+    "result": "Win",
+    "rank": "Champion",
+    "division": 1,
+    "percent": 99,
+    "goodComment": "",
+    "badComment": ""
   }
 ]
