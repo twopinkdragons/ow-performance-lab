@@ -18,5 +18,15 @@
     "percent": -24,
     "goodComment": "",
     "badComment": "Tank got mad and stayed in spawn... not much to do here"
+  },
+  {
+    "map": "Esperança",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 36,
+    "goodComment": "",
+    "badComment": "Not sure how to handle when everyone groups up in a ball. Also not sure how to play into Cass + Torb guarding turret"
   }
 ]
