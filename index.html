@@ -907,7 +907,12 @@
     var pct = parseInt(percentInput.value, 10);
     if (isNaN(pct)) pct = 0;
     pct = Math.max(-99, Math.min(99, pct));
-    percentInput.value = pct;
+    // Note: intentionally NOT writing the clamped value back to
+    // percentInput here — doing so on every keystroke stomps on a
+    // lone "-" while typing a negative number before the digits
+    // follow it (parseInt("-") is NaN, which would snap the field
+    // back to 0 and erase the minus sign). Normalizing the displayed
+    // value happens on blur instead, once typing is done.
 
     var dIdx = DIVISIONS_PER_TIER - division; // division 5 -> 0 ... division 1 -> 4
     var tierPos = (dIdx + pct / 100) / DIVISIONS_PER_TIER; // 0..1 across the whole tier
@@ -926,9 +931,18 @@
     rangeEndLabel.textContent = 'Progress to ' + (hasNextTier ? TIERS[tierIdx + 1].name + ' V' : TIERS[tierIdx].name + ' I (top rank)');
   }
 
+  function normalizePercentInput(){
+    var pct = parseInt(percentInput.value, 10);
+    if (isNaN(pct)) pct = 0;
+    pct = Math.max(-99, Math.min(99, pct));
+    percentInput.value = pct;
+    updateMeter();
+  }
+
   rankSelect.addEventListener('change', updateMeter);
   divisionSelect.addEventListener('change', updateMeter);
   percentInput.addEventListener('input', updateMeter);
+  percentInput.addEventListener('blur', normalizePercentInput);
 
   updateMeter();
 
