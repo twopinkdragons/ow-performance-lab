@@ -38,5 +38,15 @@
     "percent": 65,
     "goodComment": "Pulse bombs went crazy; frequently double kills",
     "badComment": "Stayed in spots where soldier would easily almost instakill me while I was distracted. Need to be more aware of other angles while I'm shooting"
+  },
+  {
+    "map": "Suravasa",
+    "hero": "Echo",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 34,
+    "goodComment": "",
+    "badComment": "Landed in front of people often"
   }
 ]
