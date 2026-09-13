@@ -601,7 +601,7 @@
           <option>Gold</option>
           <option>Platinum</option>
           <option>Emerald</option>
-          <option>Diamond</option>
+          <option selected>Diamond</option>
           <option>Master</option>
           <option>Grandmaster</option>
           <option>Champion</option>
@@ -612,14 +612,14 @@
         <select id="division">
           <option>5</option>
           <option>4</option>
-          <option>3</option>
+          <option selected>3</option>
           <option>2</option>
           <option>1</option>
         </select>
       </div>
       <div class="field">
         <label for="percentInput">Percent</label>
-        <div class="percent-input-wrap"><input type="number" id="percentInput" min="-99" max="99" value="0"><span>%</span></div>
+        <div class="percent-input-wrap"><input type="number" id="percentInput" min="-99" max="99" value="62"><span>%</span></div>
       </div>
 
       <div class="division-progress">
@@ -1177,6 +1177,7 @@
         parts.push('<line class="tick-mark-major" x1="' + (CHART_LEFT - 6) + '" y1="' + gy + '" x2="' + CHART_LEFT + '" y2="' + gy + '"/>');
         parts.push('<text class="tick-major" x="' + (CHART_LEFT - 10) + '" y="' + (gy + 3) + '" text-anchor="end">' + abbrLabelAt(t) + '</text>');
       } else if (showMinorTicks){
+        parts.push('<line class="grid-line" x1="' + CHART_LEFT + '" y1="' + gy + '" x2="' + CHART_RIGHT + '" y2="' + gy + '" stroke-dasharray="1,5"/>');
         parts.push('<line class="tick-mark-minor" x1="' + (CHART_LEFT - 3) + '" y1="' + gy + '" x2="' + CHART_LEFT + '" y2="' + gy + '"/>');
         parts.push('<text class="tick-minor" x="' + (CHART_LEFT - 10) + '" y="' + (gy + 3) + '" text-anchor="end">' + abbrLabelAt(t) + '</text>');
       }
