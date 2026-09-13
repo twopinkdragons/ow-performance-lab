@@ -575,6 +575,27 @@
     display: block;
   }
 
+  .row-delete-btn{
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1;
+    padding: 2px 4px;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+
+  .row-delete-btn:hover{
+    color: #b90e0e;
+    background: rgba(185, 14, 14, 0.12);
+  }
+
+  .row-delete-btn:disabled{
+    opacity: 0.4;
+    cursor: default;
+  }
+
   @media (max-width: 560px){
     .field-row, .comment-row{ grid-template-columns: 1fr; }
     .rank-readout{ grid-template-columns: 1fr; }
@@ -788,6 +809,7 @@
               <th>Result</th>
               <th>Rank</th>
               <th class="num">%</th>
+              <th class="num"></th>
             </tr>
           </thead>
           <tbody id="matchTableBody"></tbody>
@@ -1442,11 +1464,56 @@
         '<td style="color:' + resultColor + '">' + escapeHtml(g.result) + '</td>' +
         '<td class="truncate" title="' + escapeHtml(rankText) + '">' + escapeHtml(rankText) + '</td>' +
         '<td class="num">' + g.percent + '%</td>' +
+        '<td class="num"><button type="button" class="row-delete-btn" data-index="' + i + '" title="Delete this match">\u00d7</button></td>' +
       '</tr>';
     }).join('');
 
     matchTableBody.innerHTML = rowsHtml;
   }
+
+  // Delete a match: re-fetch the current file (avoid a stale sha), remove
+  // the record at this index, save, then drop it locally and re-render
+  // both the graph and the table.
+  matchTableBody.addEventListener('click', function(e){
+    var btn = e.target.closest('.row-delete-btn');
+    if (!btn) return;
+
+    if (!ghGetToken()){
+      setGithubStatus('error', 'Connect GitHub to delete');
+      githubTokenRow.classList.add('visible');
+      githubTokenInput.focus();
+      return;
+    }
+
+    var index = parseInt(btn.getAttribute('data-index'), 10);
+    var g = ALL_GAMES[index];
+    if (!g) return;
+
+    var label = g.map + ' \u2014 ' + g.rank + ' ' + romanDivision(g.division) + ' (' + g.percent + '%)';
+    if (!window.confirm('Delete match #' + (index + 1) + ': ' + label + '?')) return;
+
+    Array.prototype.forEach.call(matchTableBody.querySelectorAll('.row-delete-btn'), function(b){
+      b.disabled = true;
+    });
+    setGithubStatus('', 'Deleting\u2026');
+
+    ghFetchMatches().then(function(records){
+      records.splice(index, 1);
+      return ghSaveMatches(records, 'Delete match: ' + label);
+    }).then(function(){
+      ALL_GAMES.splice(index, 1);
+      render();
+      renderTable();
+      prefillFromLastGame();
+      setGithubStatus('ok', 'Synced');
+    }).catch(function(err){
+      setGithubStatus('error', 'Delete failed');
+      console.error(err);
+      Array.prototype.forEach.call(matchTableBody.querySelectorAll('.row-delete-btn'), function(b){
+        b.disabled = false;
+      });
+    });
+  });
 
   svg.addEventListener('pointermove', function(e){
     var target = e.target;
