@@ -78,5 +78,35 @@
     "percent": 59,
     "goodComment": "",
     "badComment": "Died all the time and played way too aggressive. Not enough off angles"
+  },
+  {
+    "map": "Oasis",
+    "hero": "Echo",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 31,
+    "goodComment": "",
+    "badComment": ""
+  },
+  {
+    "map": "Blizzard World",
+    "hero": "Echo",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 3,
+    "goodComment": "",
+    "badComment": ""
+  },
+  {
+    "map": "Circuit Royal",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 3,
+    "percent": -30,
+    "goodComment": "Overall played out of my mind, but still lost",
+    "badComment": "Got greedy on some picks and died to Brig too often"
   }
 ]
