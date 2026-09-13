@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "map": "Rialto",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 2,
+    "percent": 0,
+    "goodComment": "",
+    "badComment": ""
+  }
+]
