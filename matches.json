@@ -78,5 +78,15 @@
     "percent": 59,
     "goodComment": "",
     "badComment": "Died all the time and played way too aggressive. Not enough off angles"
+  },
+  {
+    "map": "Oasis",
+    "hero": "Echo",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 31,
+    "goodComment": "",
+    "badComment": ""
   }
 ]
