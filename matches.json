@@ -58,5 +58,15 @@
     "percent": 1,
     "goodComment": "Thought I played well for the most part.",
     "badComment": "Could've tried to contest point more often. We might've held them at the first point if I did"
+  },
+  {
+    "map": "Paraíso",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 30,
+    "goodComment": "Did good surprising people",
+    "badComment": "Sometimes would blink directly into people and get instapopped"
   }
 ]
