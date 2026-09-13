@@ -88,5 +88,15 @@
     "percent": 31,
     "goodComment": "",
     "badComment": ""
+  },
+  {
+    "map": "Blizzard World",
+    "hero": "Echo",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 3,
+    "goodComment": "",
+    "badComment": ""
   }
 ]
