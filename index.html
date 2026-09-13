@@ -33,9 +33,26 @@
   }
 
   .page{
-    max-width: 780px;
+    max-width: 1240px;
     margin: 0 auto;
     padding: 48px 24px 96px;
+  }
+
+  .layout{
+    display: grid;
+    grid-template-columns: minmax(0, 780px) 420px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .side-col{
+    position: sticky;
+    top: 24px;
+  }
+
+  @media (max-width: 980px){
+    .layout{ grid-template-columns: 1fr; }
+    .side-col{ position: static; }
   }
 
   header.masthead{
@@ -300,6 +317,18 @@
     min-height: 64px;
   }
 
+  .form-error{
+    display: none;
+    color: #ff8a80;
+    font-size: 13px;
+    margin-bottom: 10px;
+    text-align: right;
+  }
+
+  .form-error.visible{
+    display: block;
+  }
+
   .save-row{
     display: flex;
     justify-content: flex-end;
@@ -481,6 +510,71 @@
     font-size: 12px;
   }
 
+  /* ---- Match history table ---- */
+
+  .table-section{
+    padding: 24px 20px 20px;
+  }
+
+  .table-section h2{
+    margin-bottom: 14px;
+  }
+
+  .table-wrap{
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+  }
+
+  .match-table{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+
+  .match-table thead th{
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    color: var(--muted);
+    text-align: left;
+    font-weight: 500;
+    padding: 0 6px 8px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+
+  .match-table td{
+    padding: 7px 6px;
+    border-bottom: 1px solid var(--line);
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .match-table td.truncate{
+    max-width: 84px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .match-table th.num, .match-table td.num{
+    text-align: right;
+  }
+
+  .match-table tbody tr:hover{
+    background: var(--surface-raised);
+  }
+
+  .table-empty{
+    display: none;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 12px 0 4px;
+  }
+
+  .table-empty.visible{
+    display: block;
+  }
+
   @media (max-width: 560px){
     .field-row, .comment-row{ grid-template-columns: 1fr; }
     .rank-readout{ grid-template-columns: 1fr; }
@@ -510,6 +604,9 @@
     <input type="password" id="githubTokenInput" placeholder="Paste fine-grained GitHub token">
     <button type="button" id="githubTokenSave" class="mini-btn">Save token</button>
   </div>
+
+  <div class="layout">
+  <div class="main-col">
 
   <section class="panel" aria-labelledby="log-heading">
     <h2 id="log-heading">Log a match</h2>
@@ -585,7 +682,7 @@
       <div class="field">
         <label>Result</label>
         <div class="result-toggle" id="resultToggle">
-          <button type="button" class="result-btn active" data-result="Win">Win</button>
+          <button type="button" class="result-btn" data-result="Win">Win</button>
           <button type="button" class="result-btn" data-result="Loss">Loss</button>
           <button type="button" class="result-btn" data-result="Tie">Tie</button>
         </div>
@@ -619,7 +716,7 @@
       </div>
       <div class="field">
         <label for="percentInput">Percent</label>
-        <div class="percent-input-wrap"><input type="number" id="percentInput" min="-99" max="99" value="62"><span>%</span></div>
+        <div class="percent-input-wrap"><input type="number" id="percentInput" min="-99" max="99" placeholder="\u2014"><span>%</span></div>
       </div>
 
       <div class="division-progress">
@@ -641,6 +738,8 @@
         <textarea id="bad" placeholder="Overextended twice, missed picks..."></textarea>
       </div>
     </div>
+
+    <div class="form-error" id="formError"></div>
 
     <div class="save-row">
       <button class="save" id="saveMatchBtn" type="button">Save match</button>
@@ -673,6 +772,32 @@
     </div>
     <div class="point-tooltip" id="pointTooltip"></div>
   </section>
+
+  </div>
+
+  <div class="side-col">
+    <section class="panel table-section" aria-labelledby="table-heading">
+      <h2 id="table-heading">Match history</h2>
+      <div class="table-wrap">
+        <table class="match-table" id="matchTable">
+          <thead>
+            <tr>
+              <th class="num">#</th>
+              <th>Map</th>
+              <th>Hero</th>
+              <th>Result</th>
+              <th>Rank</th>
+              <th class="num">%</th>
+            </tr>
+          </thead>
+          <tbody id="matchTableBody"></tbody>
+        </table>
+        <div class="table-empty" id="tableEmpty">No matches logged yet.</div>
+      </div>
+    </section>
+  </div>
+
+  </div>
 
 </div>
 
@@ -990,6 +1115,8 @@
       setGithubStatus('ok', 'Synced');
       githubConnectBtn.textContent = 'Reconnect';
       render();
+      renderTable();
+      prefillFromLastGame();
     }).catch(function(err){
       setGithubStatus('error', 'Connection error');
       console.error(err);
@@ -1004,6 +1131,54 @@
   var saveMatchBtn = document.getElementById('saveMatchBtn');
   var goodTextarea = document.getElementById('good');
   var badTextarea = document.getElementById('bad');
+  var formError = document.getElementById('formError');
+
+  function showFormError(msg){
+    formError.textContent = msg;
+    formError.classList.add('visible');
+  }
+  function clearFormError(){
+    formError.textContent = '';
+    formError.classList.remove('visible');
+  }
+
+  // The most recently logged game — ALL_GAMES is always in the order
+  // matches were saved, so this is simply the last element.
+  function getLastGame(){
+    return ALL_GAMES.length ? ALL_GAMES[ALL_GAMES.length - 1] : null;
+  }
+
+  // Pre-fill hero/rank/division from whatever was last logged, since
+  // that's almost always still true for the next match. Result and
+  // percent are cleared instead of defaulted — those change every game
+  // and a stale default invites logging bad data.
+  function prefillFromLastGame(){
+    var last = getLastGame();
+    if (last){
+      if (last.hero) heroSelect.value = last.hero;
+      if (last.rank) rankSelect.value = last.rank;
+      if (last.division) divisionSelect.value = String(last.division);
+    }
+    percentInput.value = '';
+    Array.prototype.forEach.call(resultToggle.querySelectorAll('.result-btn'), function(b){
+      b.classList.remove('active');
+    });
+    clearFormError();
+    updateMeter();
+  }
+
+  prefillFromLastGame();
+
+  function validateMatchForm(){
+    var missing = [];
+    if (!mapSelect.value) missing.push('Map');
+    if (!heroSelect.value) missing.push('Hero');
+    if (!resultToggle.querySelector('.result-btn.active')) missing.push('Win/Loss/Tie');
+    if (!rankSelect.value) missing.push('Rank');
+    if (!divisionSelect.value) missing.push('Division');
+    if (percentInput.value.trim() === '' || isNaN(parseInt(percentInput.value, 10))) missing.push('Percent');
+    return missing;
+  }
 
   saveMatchBtn.addEventListener('click', function(){
     if (!ghGetToken()){
@@ -1013,12 +1188,18 @@
       return;
     }
 
+    var missing = validateMatchForm();
+    if (missing.length){
+      showFormError('Fill in ' + missing.join(', ') + ' before saving.');
+      return;
+    }
+    clearFormError();
+
     var activeResultBtn = resultToggle.querySelector('.result-btn.active');
-    var result = activeResultBtn ? activeResultBtn.getAttribute('data-result') : 'Win';
+    var result = activeResultBtn.getAttribute('data-result');
     var tierIdx = TIERS.findIndex(function(t){ return t.name === rankSelect.value; });
     var division = parseInt(divisionSelect.value, 10);
     var pct = parseInt(percentInput.value, 10);
-    if (isNaN(pct)) pct = 0;
 
     var newGame = {
       v: valueOf(tierIdx, division, pct),
@@ -1044,9 +1225,11 @@
     }).then(function(){
       ALL_GAMES.push(newGame);
       render();
+      renderTable();
       goodTextarea.value = '';
       badTextarea.value = '';
       setGithubStatus('ok', 'Synced');
+      prefillFromLastGame();
     }).catch(function(err){
       setGithubStatus('error', 'Save failed');
       console.error(err);
@@ -1207,6 +1390,38 @@
     statusEl.textContent = n + (n === 1 ? ' game' : ' games') + ' shown \u00b7 ' + labelAt(axisMin) + ' \u2013 ' + labelAt(axisMax) + ' visible range';
   }
 
+  // ---- Match history table: full log, unaffected by the graph's range filter ----
+  var matchTableBody = document.getElementById('matchTableBody');
+  var tableEmpty = document.getElementById('tableEmpty');
+
+  function escapeHtml(s){
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function renderTable(){
+    if (!ALL_GAMES.length){
+      matchTableBody.innerHTML = '';
+      tableEmpty.classList.add('visible');
+      return;
+    }
+    tableEmpty.classList.remove('visible');
+
+    var rowsHtml = ALL_GAMES.map(function(g, i){
+      var resultColor = RESULT_COLORS[g.result] || RESULT_COLORS.Win;
+      var rankText = g.rank + ' ' + romanDivision(g.division);
+      return '<tr>' +
+        '<td class="num">' + (i + 1) + '</td>' +
+        '<td class="truncate" title="' + escapeHtml(g.map) + '">' + escapeHtml(g.map) + '</td>' +
+        '<td class="truncate" title="' + escapeHtml(g.hero) + '">' + escapeHtml(g.hero) + '</td>' +
+        '<td style="color:' + resultColor + '">' + escapeHtml(g.result) + '</td>' +
+        '<td class="truncate" title="' + escapeHtml(rankText) + '">' + escapeHtml(rankText) + '</td>' +
+        '<td class="num">' + g.percent + '%</td>' +
+      '</tr>';
+    }).join('');
+
+    matchTableBody.innerHTML = rowsHtml;
+  }
+
   svg.addEventListener('pointermove', function(e){
     var target = e.target;
     if (target && target.hasAttribute && target.hasAttribute('data-tooltip')){
@@ -1229,6 +1444,7 @@
   });
 
   render();
+  renderTable();
 })();
 </script>
 </body>
