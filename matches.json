@@ -28,5 +28,15 @@
     "percent": 36,
     "goodComment": "",
     "badComment": "Not sure how to handle when everyone groups up in a ball. Also not sure how to play into Cass + Torb guarding turret"
+  },
+  {
+    "map": "Esperança",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 65,
+    "goodComment": "Pulse bombs went crazy; frequently double kills",
+    "badComment": "Stayed in spots where soldier would easily almost instakill me while I was distracted. Need to be more aware of other angles while I'm shooting"
   }
 ]
