@@ -8,5 +8,45 @@
     "percent": 8,
     "goodComment": "Placement 10: Went well.",
     "badComment": " Hard to find engages on the first point because it's so long"
+  },
+  {
+    "map": "Lijiang Tower",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 2,
+    "percent": -24,
+    "goodComment": "",
+    "badComment": "Tank got mad and stayed in spawn... not much to do here"
+  },
+  {
+    "map": "Esperança",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 36,
+    "goodComment": "",
+    "badComment": "Not sure how to handle when everyone groups up in a ball. Also not sure how to play into Cass + Torb guarding turret"
+  },
+  {
+    "map": "Route 66",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 65,
+    "goodComment": "Pulse bombs went crazy; frequently double kills",
+    "badComment": "Stayed in spots where soldier would easily almost instakill me while I was distracted. Need to be more aware of other angles while I'm shooting"
+  },
+  {
+    "map": "Suravasa",
+    "hero": "Echo",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 34,
+    "goodComment": "",
+    "badComment": "Landed in front of people often"
   }
 ]
