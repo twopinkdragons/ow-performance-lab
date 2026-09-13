@@ -716,7 +716,7 @@
       </div>
       <div class="field">
         <label for="percentInput">Percent</label>
-        <div class="percent-input-wrap"><input type="number" id="percentInput" min="-99" max="99" placeholder="\u2014"><span>%</span></div>
+        <div class="percent-input-wrap"><input type="number" id="percentInput" min="-99" max="99" placeholder="&mdash;"><span>%</span></div>
       </div>
 
       <div class="division-progress">
@@ -1325,6 +1325,10 @@
     }
 
     var n = games.length;
+    // Absolute game numbers for the displayed slice (matches the table's
+    // numbering) — needed so x-axis ticks reference real game numbers,
+    // not just position-within-the-current-filter.
+    var startGameNumber = ALL_GAMES.length - n + 1;
     var points = games.map(function(g, i){
       // Text always shows the true rank/division/percent as entered — even
       // under rank protection, where a negative percent means the graph's
@@ -1368,6 +1372,28 @@
 
     parts.push('<line class="axis-line" x1="' + CHART_LEFT + '" y1="' + CHART_TOP + '" x2="' + CHART_LEFT + '" y2="' + CHART_BOTTOM + '"/>');
     parts.push('<line class="axis-line" x1="' + CHART_LEFT + '" y1="' + CHART_BOTTOM + '" x2="' + CHART_RIGHT + '" y2="' + CHART_BOTTOM + '"/>');
+
+    // x-axis: game-number ticks at a "nice" round interval (1/2/5 x a power
+    // of ten), sized to land on roughly 6-8 ticks regardless of how many
+    // games are on screen — the same approach D3/Chart.js/matplotlib use
+    // for auto-scaling axis ticks to a variable data range.
+    function niceNum(x){
+      if (x <= 0) return 1;
+      var exp = Math.floor(Math.log(x) / Math.LN10);
+      var f = x / Math.pow(10, exp);
+      var niceF = f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10;
+      return niceF * Math.pow(10, exp);
+    }
+    var TARGET_X_TICKS = 7;
+    var xTickStep = Math.max(1, niceNum(n / TARGET_X_TICKS));
+    var endGameNumber = ALL_GAMES.length;
+    var firstXTick = Math.ceil(startGameNumber / xTickStep) * xTickStep;
+    for (var gn = firstXTick; gn <= endGameNumber; gn += xTickStep){
+      var idx = gn - startGameNumber;
+      var px = xFor(idx, n);
+      parts.push('<line class="tick-mark-minor" x1="' + px + '" y1="' + CHART_BOTTOM + '" x2="' + px + '" y2="' + (CHART_BOTTOM + 5) + '"/>');
+      parts.push('<text class="axis-label" x="' + px + '" y="' + (CHART_BOTTOM + 16) + '" text-anchor="middle">' + gn + '</text>');
+    }
 
     for (var i = 0; i < points.length - 1; i++){
       var p1 = points[i], p2 = points[i+1];
