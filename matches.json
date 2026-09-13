@@ -53,16 +53,6 @@
     "map": "Aatlis",
     "hero": "Torbjörn",
     "result": "Win",
-    "rank": "Emerald",
-    "division": 3,
-    "percent": 24,
-    "goodComment": "",
-    "badComment": ""
-  },
-  {
-    "map": "Aatlis",
-    "hero": "Torbjörn",
-    "result": "Win",
     "rank": "Champion",
     "division": 1,
     "percent": 99,
