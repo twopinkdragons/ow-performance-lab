@@ -601,7 +601,7 @@
           <option>Gold</option>
           <option>Platinum</option>
           <option>Emerald</option>
-          <option>Diamond</option>
+          <option selected>Diamond</option>
           <option>Master</option>
           <option>Grandmaster</option>
           <option>Champion</option>
@@ -612,14 +612,14 @@
         <select id="division">
           <option>5</option>
           <option>4</option>
-          <option>3</option>
+          <option selected>3</option>
           <option>2</option>
           <option>1</option>
         </select>
       </div>
       <div class="field">
         <label for="percentInput">Percent</label>
-        <div class="percent-input-wrap"><input type="number" id="percentInput" min="0" max="99" value="0"><span>%</span></div>
+        <div class="percent-input-wrap"><input type="number" id="percentInput" min="-99" max="99" value="62"><span>%</span></div>
       </div>
 
       <div class="division-progress">
@@ -742,11 +742,11 @@
   var ROMAN_TO_DIVISION = { I: 1, II: 2, III: 3, IV: 4, V: 5 };
 
   var ALL_GAMES = [
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  8),  map: "Rialto",        mode: "Escort",     hero: "Tracer", result: "Win"  },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  -24), map: "Lijiang Tower", mode: "Control",    hero: "Tracer", result: "Loss" },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 36), map: "Esperança",     mode: "Push",       hero: "Tracer", result: "Loss" },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 65), map: "Route 66",      mode: "Escort",     hero: "Tracer", result: "Win"  },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 34), map: "Suravasa",      mode: "Flashpoint", hero: "Echo",   result: "Loss" }
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  8),   rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: 8,   map: "Rialto",        mode: "Escort",     hero: "Tracer", result: "Win"  },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  -24), rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: -24, map: "Lijiang Tower", mode: "Control",    hero: "Tracer", result: "Loss" },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 36),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 36,  map: "Esperança",     mode: "Push",       hero: "Tracer", result: "Loss" },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 65),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 65,  map: "Route 66",      mode: "Escort",     hero: "Tracer", result: "Win"  },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 34),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 34,  map: "Suravasa",      mode: "Flashpoint", hero: "Echo",   result: "Loss" }
   ];
   // ^ Local fallback shown until a GitHub connection loads the real data
   // (or if the person never connects at all).
@@ -808,12 +808,18 @@
   }
 
   // A saved record stores the source-of-truth fields (rank name, division
-  // number, percent) rather than the derived continuous value.
+  // number, percent) rather than the derived continuous value. Percent can
+  // be negative under rank protection — that's kept as-is here so text
+  // displays always show the true rank/division, never a value decoded
+  // back out of the (possibly demoted) graph position.
   function recordToGame(rec){
     var tierIdx = TIERS.findIndex(function(t){ return t.name === rec.rank; });
     if (tierIdx < 0) tierIdx = 0;
     return {
       v: valueOf(tierIdx, rec.division, rec.percent),
+      rank: rec.rank,
+      division: rec.division,
+      percent: rec.percent,
       map: rec.map,
       mode: rec.mode,
       hero: rec.hero,
@@ -824,15 +830,14 @@
   }
 
   function gameToRecord(g){
-    var info = pointInfo(g.v);
     return {
       map: g.map,
       mode: g.mode,
       hero: g.hero,
       result: g.result,
-      rank: info.tier,
-      division: info.division,
-      percent: info.percent,
+      rank: g.rank,
+      division: g.division,
+      percent: g.percent,
       goodComment: g.goodComment || '',
       badComment: g.badComment || ''
     };
@@ -901,7 +906,7 @@
     var division = parseInt(divisionSelect.value, 10);
     var pct = parseInt(percentInput.value, 10);
     if (isNaN(pct)) pct = 0;
-    pct = Math.max(0, Math.min(99, pct));
+    pct = Math.max(-99, Math.min(99, pct));
     percentInput.value = pct;
 
     var dIdx = DIVISIONS_PER_TIER - division; // division 5 -> 0 ... division 1 -> 4
@@ -1003,6 +1008,9 @@
 
     var newGame = {
       v: valueOf(tierIdx, division, pct),
+      rank: rankSelect.value,
+      division: division,
+      percent: pct,
       map: mapSelect.value,
       hero: heroSelect.value,
       result: result,
@@ -1121,8 +1129,11 @@
 
     var n = games.length;
     var points = games.map(function(g, i){
-      var info = pointInfo(g.v);
-      var tooltip = info.tier + ' ' + romanDivision(info.division) + ': ' + info.percent + '% (' + g.result + ')|' + g.hero + ' \u2014 ' + g.map;
+      // Text always shows the true rank/division/percent as entered — even
+      // under rank protection, where a negative percent means the graph's
+      // y-position and color sit lower (as if actually demoted) while the
+      // label still reads e.g. "Gold II: -24%".
+      var tooltip = g.rank + ' ' + romanDivision(g.division) + ': ' + g.percent + '% (' + g.result + ')|' + g.hero + ' \u2014 ' + g.map;
       return { x: xFor(i, n), y: yFor(g.v), color: colorAt(g.v), result: g.result, tooltip: tooltip };
     });
 
