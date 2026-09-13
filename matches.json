@@ -68,5 +68,15 @@
     "percent": 30,
     "goodComment": "Did good surprising people",
     "badComment": "Sometimes would blink directly into people and get instapopped"
+  },
+  {
+    "map": "Junkertown",
+    "hero": "Echo",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 59,
+    "goodComment": "",
+    "badComment": "Died all the time and played way too aggressive. Not enough off angles"
   }
 ]
