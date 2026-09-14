@@ -194,5 +194,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-09-13"
+  },
+  {
+    "map": "Aatlis",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 2,
+    "percent": 56,
+    "goodComment": "Fantastic game. Good mechanics, good timing, good angles. 27-1 KD",
+    "badComment": "Pulsed too early",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-09-13"
   }
 ]
