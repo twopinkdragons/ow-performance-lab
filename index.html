@@ -102,7 +102,7 @@
       </div>
     </div>
 
-    <div class="field-row">
+    <div class="field-row field-row-flags">
       <div class="field">
         <label>Result</label>
         <div class="result-toggle" id="resultToggle">
@@ -113,10 +113,18 @@
       </div>
       <div class="field">
         <label>VOD</label>
-        <label class="vod-checkbox-wrap" for="vodCheckbox">
-          <input type="checkbox" id="vodCheckbox" class="vod-checkbox">
+        <label class="checkbox-field-wrap" for="vodCheckbox">
+          <input type="checkbox" id="vodCheckbox" class="hidden-checkbox">
           <span class="checkbox-box"></span>
           <span>VOD reviewed</span>
+        </label>
+      </div>
+      <div class="field">
+        <label>Leaver/Thrower</label>
+        <label class="checkbox-field-wrap" for="leaverThrowerCheckbox">
+          <input type="checkbox" id="leaverThrowerCheckbox" class="hidden-checkbox">
+          <span class="checkbox-box"></span>
+          <span>Leaver/thrower</span>
         </label>
       </div>
     </div>
@@ -213,14 +221,15 @@
       <div class="table-wrap">
         <table class="match-table" id="matchTable">
           <colgroup>
+            <col style="width:5%">
             <col style="width:6%">
-            <col style="width:7%">
-            <col style="width:17%">
-            <col style="width:14%">
+            <col style="width:16%">
             <col style="width:13%">
-            <col style="width:18%">
+            <col style="width:11%">
+            <col style="width:16%">
             <col style="width:10%">
-            <col style="width:10%">
+            <col style="width:9%">
+            <col style="width:9%">
             <col style="width:5%">
           </colgroup>
           <thead>
@@ -232,7 +241,8 @@
               <th>Result</th>
               <th>Rank</th>
               <th class="num">%</th>
-              <th class="num">VOD</th>
+              <th class="num" title="VOD reviewed">VOD</th>
+              <th class="num" title="Leaver/Thrower">L/T</th>
               <th class="num"></th>
             </tr>
           </thead>
