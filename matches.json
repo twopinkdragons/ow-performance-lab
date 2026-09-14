@@ -169,5 +169,17 @@
     "badComment": "Greeded recall and died a few times",
     "vodReviewed": false,
     "leaverThrower": false
+  },
+  {
+    "map": "Eichenwalde",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 97,
+    "goodComment": "Got picks on attack that won us the point",
+    "badComment": "Didn't move to another angle when Junkrat looked at me",
+    "vodReviewed": false,
+    "leaverThrower": false
   }
 ]
