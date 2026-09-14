@@ -98,5 +98,15 @@
     "percent": 3,
     "goodComment": "",
     "badComment": ""
+  },
+  {
+    "map": "Circuit Royal",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 3,
+    "percent": -30,
+    "goodComment": "Overall, played out of my mind and secured many picks, but still lost :(",
+    "badComment": "Got greedy and would ego 1v1 stupid people like Brigitte"
   }
 ]
