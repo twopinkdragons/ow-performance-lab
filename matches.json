@@ -99,5 +99,16 @@
     "goodComment": "",
     "badComment": "",
     "vodReviewed": false
+  },
+  {
+    "map": "Circuit Royal",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 3,
+    "percent": -30,
+    "goodComment": "Played well for the most part, unfortunate loss.",
+    "badComment": "1) Went for silly 1v1s with characters like Brig\n2) Shot at angles where I had crossfire on me",
+    "vodReviewed": true
   }
 ]
