@@ -151,7 +151,8 @@
       goodComment: rec.goodComment || '',
       badComment: rec.badComment || '',
       vodReviewed: !!rec.vodReviewed,
-      leaverThrower: !!rec.leaverThrower
+      leaverThrower: !!rec.leaverThrower,
+      date: rec.date || null
     };
   }
 
@@ -167,12 +168,39 @@
       goodComment: g.goodComment || '',
       badComment: g.badComment || '',
       vodReviewed: !!g.vodReviewed,
-      leaverThrower: !!g.leaverThrower
+      leaverThrower: !!g.leaverThrower,
+      date: g.date || null
     };
   }
 
   function romanDivision(d){
     return ['', 'I', 'II', 'III', 'IV', 'V'][d] || d;
+  }
+
+  // Today's date as seen in the actual Mountain time zone (America/Denver),
+  // which correctly follows MST/MDT across daylight saving — not a fixed
+  // UTC-7 offset. Stored as ISO (YYYY-MM-DD) for unambiguous sorting/storage.
+  function getTodayDateMountain(){
+    var parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Denver',
+      year: 'numeric', month: '2-digit', day: '2-digit'
+    }).formatToParts(new Date());
+    var y, m, d;
+    parts.forEach(function(p){
+      if (p.type === 'year') y = p.value;
+      if (p.type === 'month') m = p.value;
+      if (p.type === 'day') d = p.value;
+    });
+    return y + '-' + m + '-' + d;
+  }
+
+  // Compact display form for the table: "MM/DD/YY", with the full ISO
+  // date available via title-attribute tooltip wherever it's shown.
+  function formatDateShort(iso){
+    if (!iso) return '\u2014';
+    var parts = iso.split('-');
+    if (parts.length !== 3) return iso;
+    return parts[1] + '/' + parts[2] + '/' + parts[0].slice(2);
   }
 
   // How many divisions Gold 3 -> Master 3 spans. At this wide a range or
@@ -420,7 +448,8 @@
       goodComment: goodTextarea.value,
       badComment: badTextarea.value,
       vodReviewed: vodCheckbox.checked,
-      leaverThrower: leaverThrowerCheckbox.checked
+      leaverThrower: leaverThrowerCheckbox.checked,
+      date: getTodayDateMountain()
     };
 
     saveMatchBtn.disabled = true;
@@ -450,7 +479,7 @@
   });
 
   // ---- Range selection state ----
-  var selectedRange = { type: 'last', n: 250 };
+  var selectedRange = { type: 'last', n: 50 };
 
   var rangeSelector = document.getElementById('rangeSelector');
   var customInput = document.getElementById('customRangeInput');
@@ -634,7 +663,7 @@
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  var TABLE_COLS = 10; // toggle, #, map, hero, result, rank, %, vod, leaver/thrower, delete
+  var TABLE_COLS = 11; // toggle, #, date, map, hero, result, rank, %, vod, leaver/thrower, delete
 
   function renderTable(){
     if (!ALL_GAMES.length){
@@ -654,6 +683,7 @@
       var mainRow = '<tr class="match-row">' +
         '<td class="num"><button type="button" class="expand-toggle' + (hasComments ? '' : ' no-comments') + '" data-index="' + i + '" title="' + (hasComments ? 'Show comments' : 'No comments logged') + '">\u203a</button></td>' +
         '<td class="num">' + (i + 1) + '</td>' +
+        '<td class="truncate" title="' + (g.date || 'Not recorded') + '">' + formatDateShort(g.date) + '</td>' +
         '<td class="truncate" title="' + escapeHtml(g.map) + '">' + escapeHtml(g.map) + '</td>' +
         '<td class="truncate" title="' + escapeHtml(g.hero) + '">' + escapeHtml(g.hero) + '</td>' +
         '<td style="color:' + resultColor + '">' + escapeHtml(g.result) + '</td>' +
