@@ -121,5 +121,17 @@
     "goodComment": "",
     "badComment": "Frequently engaged head-on. Cass predicted a lot of my blinks with flashbang",
     "vodReviewed": false
+  },
+  {
+    "map": "Rialto",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 4,
+    "percent": 84,
+    "goodComment": "",
+    "badComment": "",
+    "vodReviewed": false,
+    "leaverThrower": true
   }
 ]
