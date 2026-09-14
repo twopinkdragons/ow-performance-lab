@@ -181,5 +181,18 @@
     "badComment": "Didn't move to another angle when Junkrat looked at me",
     "vodReviewed": false,
     "leaverThrower": false
+  },
+  {
+    "map": "Havana",
+    "hero": "Echo",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 2,
+    "percent": 28,
+    "goodComment": "",
+    "badComment": "Didn't take many off angles... but it worked out",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-09-13"
   }
 ]
