@@ -220,5 +220,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-09-13"
+  },
+  {
+    "map": "Aatlis",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Bronze",
+    "division": 5,
+    "percent": 0,
+    "goodComment": "",
+    "badComment": "",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-09-13"
   }
 ]
