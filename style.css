@@ -279,23 +279,15 @@
     color: #9aa4b2;
   }
 
-  .vod-toggle-btn{
-    width: 100%;
-    background: var(--surface-raised);
-    border: 1px solid var(--line);
-    color: var(--muted);
-    font-family: 'Inter', sans-serif;
+  .vod-checkbox-wrap{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    min-height: 42px;
     font-size: 14px;
-    font-weight: 500;
-    padding: 10px 12px;
-    border-radius: 3px;
+    color: var(--text);
     cursor: pointer;
-  }
-
-  .vod-toggle-btn.active{
-    background: rgba(95, 217, 199, 0.15);
-    border-color: #5FD9C7;
-    color: #5FD9C7;
   }
 
   /* ---- Comments ---- */
@@ -522,7 +514,7 @@
   /* ---- Match history table ---- */
 
   .table-section{
-    padding: 24px 20px 20px;
+    padding: 24px 14px 20px;
   }
 
   .table-section h2{
@@ -536,8 +528,9 @@
 
   .match-table{
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
-    font-size: 12.5px;
+    font-size: 12px;
   }
 
   .match-table thead th{
@@ -547,21 +540,22 @@
     color: var(--muted);
     text-align: left;
     font-weight: 500;
-    padding: 0 6px 8px;
+    padding: 0 3px 8px;
     border-bottom: 1px solid var(--line);
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .match-table td{
-    padding: 7px 6px;
+    padding: 6px 3px;
     border-bottom: 1px solid var(--line);
     color: var(--text);
     white-space: nowrap;
+    overflow: hidden;
   }
 
   .match-table td.truncate{
-    max-width: 84px;
-    overflow: hidden;
     text-overflow: ellipsis;
   }
 
@@ -658,7 +652,35 @@
   }
 
   .vod-checkbox{
+    appearance: none;
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    min-width: 15px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--surface-raised);
     cursor: pointer;
+    position: relative;
+    vertical-align: middle;
+    margin: 0;
+  }
+
+  .vod-checkbox:checked{
+    background: #5FD9C7;
+    border-color: #5FD9C7;
+  }
+
+  .vod-checkbox:checked::after{
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid #0F1B1A;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
   }
 
   .vod-checkbox:disabled{

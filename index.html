@@ -113,7 +113,10 @@
       </div>
       <div class="field">
         <label>VOD</label>
-        <button type="button" class="vod-toggle-btn" id="vodToggleBtn">VOD reviewed</button>
+        <label class="vod-checkbox-wrap" for="vodCheckbox">
+          <input type="checkbox" id="vodCheckbox" class="vod-checkbox">
+          <span>VOD reviewed</span>
+        </label>
       </div>
     </div>
 
@@ -208,6 +211,17 @@
       <h2 id="table-heading">Match history</h2>
       <div class="table-wrap">
         <table class="match-table" id="matchTable">
+          <colgroup>
+            <col style="width:6%">
+            <col style="width:7%">
+            <col style="width:19%">
+            <col style="width:16%">
+            <col style="width:13%">
+            <col style="width:18%">
+            <col style="width:10%">
+            <col style="width:6%">
+            <col style="width:5%">
+          </colgroup>
           <thead>
             <tr>
               <th class="num"></th>

@@ -332,12 +332,8 @@
   var saveMatchBtn = document.getElementById('saveMatchBtn');
   var goodTextarea = document.getElementById('good');
   var badTextarea = document.getElementById('bad');
-  var vodToggleBtn = document.getElementById('vodToggleBtn');
+  var vodCheckbox = document.getElementById('vodCheckbox');
   var formError = document.getElementById('formError');
-
-  vodToggleBtn.addEventListener('click', function(){
-    vodToggleBtn.classList.toggle('active');
-  });
 
 
   function showFormError(msg){
@@ -367,7 +363,7 @@
       if (last.division) divisionSelect.value = String(last.division);
     }
     percentInput.value = '';
-    vodToggleBtn.classList.remove('active');
+    vodCheckbox.checked = false;
     Array.prototype.forEach.call(resultToggle.querySelectorAll('.result-btn'), function(b){
       b.classList.remove('active');
     });
@@ -419,7 +415,7 @@
       result: result,
       goodComment: goodTextarea.value,
       badComment: badTextarea.value,
-      vodReviewed: vodToggleBtn.classList.contains('active')
+      vodReviewed: vodCheckbox.checked
     };
 
     saveMatchBtn.disabled = true;
