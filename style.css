@@ -279,7 +279,11 @@
     color: #9aa4b2;
   }
 
-  .vod-checkbox-wrap{
+  .field-row-flags{
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .checkbox-field-wrap{
     display: flex;
     align-items: center;
     gap: 8px;
@@ -652,16 +656,17 @@
     font-style: italic;
   }
 
-  /* The real checkbox (used only in the entry form) stays interactive/
-     accessible but visually hidden; .checkbox-box is the thing actually
-     drawn, styled off the real checkbox's :checked state via the sibling
-     selector below. This avoids relying on `appearance: none`, which some
-     browsers (Firefox in particular, without -moz-appearance) ignore,
-     silently falling back to the native control and undoing all of this
-     styling. The table's copy is read-only, so it skips the real input
-     entirely and just gets the .checked class added directly — same visual
-     result, but with no click target and nothing to toggle. */
-  .vod-checkbox{
+  /* The real checkbox (used only in the entry form's VOD and Leaver/Thrower
+     fields) stays interactive/accessible but visually hidden; .checkbox-box
+     is the thing actually drawn, styled off the real checkbox's :checked
+     state via the sibling selector below. This avoids relying on
+     `appearance: none`, which some browsers (Firefox in particular,
+     without -moz-appearance) ignore, silently falling back to the native
+     control and undoing all of this styling. The table's copies are
+     read-only, so they skip the real input entirely and just get the
+     .checked class added directly — same visual result, but with no click
+     target and nothing to toggle. */
+  .hidden-checkbox{
     position: absolute;
     opacity: 0;
     width: 15px;
@@ -684,13 +689,13 @@
     vertical-align: middle;
   }
 
-  .vod-checkbox:checked + .checkbox-box,
+  .hidden-checkbox:checked + .checkbox-box,
   .checkbox-box.checked{
     background: #5FD9C7;
     border-color: #5FD9C7;
   }
 
-  .vod-checkbox:checked + .checkbox-box::after,
+  .hidden-checkbox:checked + .checkbox-box::after,
   .checkbox-box.checked::after{
     content: "";
     position: absolute;
@@ -703,18 +708,18 @@
     transform: rotate(45deg);
   }
 
-  .vod-checkbox:focus-visible + .checkbox-box{
+  .hidden-checkbox:focus-visible + .checkbox-box{
     outline: 2px solid #5FD9C7;
     outline-offset: 1px;
   }
 
-  .vod-checkbox:disabled + .checkbox-box{
+  .hidden-checkbox:disabled + .checkbox-box{
     opacity: 0.5;
     cursor: default;
   }
 
   @media (max-width: 560px){
-    .field-row, .comment-row{ grid-template-columns: 1fr; }
+    .field-row, .comment-row, .field-row-flags{ grid-template-columns: 1fr; }
     .rank-readout{ grid-template-columns: 1fr; }
   }
 

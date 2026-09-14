@@ -63,11 +63,11 @@
   var ROMAN_TO_DIVISION = { I: 1, II: 2, III: 3, IV: 4, V: 5 };
 
   var ALL_GAMES = [
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  8),   rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: 8,   map: "Rialto",        mode: "Escort",     hero: "Tracer", result: "Win",  vodReviewed: false },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  -24), rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: -24, map: "Lijiang Tower", mode: "Control",    hero: "Tracer", result: "Loss", vodReviewed: false },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 36),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 36,  map: "Esperança",     mode: "Push",       hero: "Tracer", result: "Loss", vodReviewed: false },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 65),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 65,  map: "Route 66",      mode: "Escort",     hero: "Tracer", result: "Win",  vodReviewed: false },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 34),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 34,  map: "Suravasa",      mode: "Flashpoint", hero: "Echo",   result: "Loss", vodReviewed: false }
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  8),   rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: 8,   map: "Rialto",        mode: "Escort",     hero: "Tracer", result: "Win",  vodReviewed: false, leaverThrower: false },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  -24), rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: -24, map: "Lijiang Tower", mode: "Control",    hero: "Tracer", result: "Loss", vodReviewed: false, leaverThrower: false },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 36),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 36,  map: "Esperança",     mode: "Push",       hero: "Tracer", result: "Loss", vodReviewed: false, leaverThrower: false },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 65),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 65,  map: "Route 66",      mode: "Escort",     hero: "Tracer", result: "Win",  vodReviewed: false, leaverThrower: false },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 34),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 34,  map: "Suravasa",      mode: "Flashpoint", hero: "Echo",   result: "Loss", vodReviewed: false, leaverThrower: false }
   ];
   // ^ Local fallback shown until a GitHub connection loads the real data
   // (or if the person never connects at all).
@@ -133,9 +133,9 @@
   // be negative under rank protection — that's kept as-is here so text
   // displays always show the true rank/division, never a value decoded
   // back out of the (possibly demoted) graph position.
-  // vodReviewed uses !! so an older record that predates this field (and
-  // so has no vodReviewed key at all) reads as false automatically —
-  // no migration of existing matches.json entries required.
+  // vodReviewed/leaverThrower use !! so an older record that predates
+  // either field (and so has no such key at all) reads as false
+  // automatically — no migration of existing matches.json entries required.
   function recordToGame(rec){
     var tierIdx = TIERS.findIndex(function(t){ return t.name === rec.rank; });
     if (tierIdx < 0) tierIdx = 0;
@@ -150,7 +150,8 @@
       result: rec.result,
       goodComment: rec.goodComment || '',
       badComment: rec.badComment || '',
-      vodReviewed: !!rec.vodReviewed
+      vodReviewed: !!rec.vodReviewed,
+      leaverThrower: !!rec.leaverThrower
     };
   }
 
@@ -165,7 +166,8 @@
       percent: g.percent,
       goodComment: g.goodComment || '',
       badComment: g.badComment || '',
-      vodReviewed: !!g.vodReviewed
+      vodReviewed: !!g.vodReviewed,
+      leaverThrower: !!g.leaverThrower
     };
   }
 
@@ -333,6 +335,7 @@
   var goodTextarea = document.getElementById('good');
   var badTextarea = document.getElementById('bad');
   var vodCheckbox = document.getElementById('vodCheckbox');
+  var leaverThrowerCheckbox = document.getElementById('leaverThrowerCheckbox');
   var formError = document.getElementById('formError');
 
 
@@ -364,6 +367,7 @@
     }
     percentInput.value = '';
     vodCheckbox.checked = false;
+    leaverThrowerCheckbox.checked = false;
     Array.prototype.forEach.call(resultToggle.querySelectorAll('.result-btn'), function(b){
       b.classList.remove('active');
     });
@@ -415,7 +419,8 @@
       result: result,
       goodComment: goodTextarea.value,
       badComment: badTextarea.value,
-      vodReviewed: vodCheckbox.checked
+      vodReviewed: vodCheckbox.checked,
+      leaverThrower: leaverThrowerCheckbox.checked
     };
 
     saveMatchBtn.disabled = true;
@@ -629,7 +634,7 @@
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  var TABLE_COLS = 9; // toggle, #, map, hero, result, rank, %, vod, delete
+  var TABLE_COLS = 10; // toggle, #, map, hero, result, rank, %, vod, leaver/thrower, delete
 
   function renderTable(){
     if (!ALL_GAMES.length){
@@ -655,6 +660,7 @@
         '<td class="truncate" title="' + escapeHtml(rankText) + '">' + escapeHtml(rankText) + '</td>' +
         '<td class="num">' + g.percent + '%</td>' +
         '<td class="num"><span class="checkbox-box' + (g.vodReviewed ? ' checked' : '') + '" title="VOD reviewed: ' + (g.vodReviewed ? 'Yes' : 'No') + '"></span></td>' +
+        '<td class="num"><span class="checkbox-box' + (g.leaverThrower ? ' checked' : '') + '" title="Leaver/Thrower: ' + (g.leaverThrower ? 'Yes' : 'No') + '"></span></td>' +
         '<td class="num"><button type="button" class="row-delete-btn" data-index="' + i + '" title="Delete this match">\u00d7</button></td>' +
       '</tr>';
 
