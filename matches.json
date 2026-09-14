@@ -97,6 +97,7 @@
     "division": 3,
     "percent": 3,
     "goodComment": "",
-    "badComment": ""
+    "badComment": "",
+    "vodReviewed": false
   }
 ]
