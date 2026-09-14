@@ -157,5 +157,17 @@
     "badComment": "Occassionally ran out of blinks but used cover to get away anyways",
     "vodReviewed": false,
     "leaverThrower": false
+  },
+  {
+    "map": "Lijiang Tower",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 3,
+    "percent": 65,
+    "goodComment": "Good blink management",
+    "badComment": "Greeded recall and died a few times",
+    "vodReviewed": false,
+    "leaverThrower": false
   }
 ]
