@@ -207,5 +207,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-09-13"
+  },
+  {
+    "map": "Eichenwalde",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 2,
+    "percent": 90,
+    "goodComment": "Did a good job at holding weird angles that forced people to look around. Did a good job resetting when a fight was lost",
+    "badComment": "Ego duels",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-09-14"
   }
 ]
