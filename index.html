@@ -163,6 +163,13 @@
       </div>
     </div>
 
+    <div class="vod-field">
+      <label class="vod-checkbox-label" for="vodCheckbox">
+        <input type="checkbox" id="vodCheckbox">
+        <span>VOD reviewed</span>
+      </label>
+    </div>
+
     <div class="form-error" id="formError"></div>
 
     <div class="save-row">
@@ -206,12 +213,14 @@
         <table class="match-table" id="matchTable">
           <thead>
             <tr>
+              <th class="num"></th>
               <th class="num">#</th>
               <th>Map</th>
               <th>Hero</th>
               <th>Result</th>
               <th>Rank</th>
               <th class="num">%</th>
+              <th class="num">VOD</th>
               <th class="num"></th>
             </tr>
           </thead>

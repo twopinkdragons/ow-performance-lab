@@ -586,6 +586,85 @@
     cursor: default;
   }
 
+  .expand-toggle{
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0 2px;
+    cursor: pointer;
+    display: inline-block;
+    transition: transform 0.12s ease;
+  }
+
+  .expand-toggle.open{
+    transform: rotate(90deg);
+    color: var(--text);
+  }
+
+  .expand-toggle.no-comments{
+    opacity: 0.3;
+  }
+
+  .match-detail-row td{
+    background: var(--surface-raised);
+    padding: 8px 10px 10px 26px;
+    border-bottom: 1px solid var(--line);
+    white-space: normal;
+  }
+
+  .detail-line{
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .detail-line:last-child{
+    margin-bottom: 0;
+  }
+
+  .detail-line .dot{
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .detail-empty{
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .vod-checkbox{
+    cursor: pointer;
+  }
+
+  .vod-checkbox:disabled{
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .vod-field{
+    margin-bottom: 16px;
+  }
+
+  .vod-checkbox-label{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .vod-checkbox-label input{
+    width: auto;
+    cursor: pointer;
+  }
+
   @media (max-width: 560px){
     .field-row, .comment-row{ grid-template-columns: 1fr; }
     .rank-readout{ grid-template-columns: 1fr; }

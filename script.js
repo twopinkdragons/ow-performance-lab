@@ -63,11 +63,11 @@
   var ROMAN_TO_DIVISION = { I: 1, II: 2, III: 3, IV: 4, V: 5 };
 
   var ALL_GAMES = [
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  8),   rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: 8,   map: "Rialto",        mode: "Escort",     hero: "Tracer", result: "Win"  },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  -24), rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: -24, map: "Lijiang Tower", mode: "Control",    hero: "Tracer", result: "Loss" },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 36),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 36,  map: "Esperança",     mode: "Push",       hero: "Tracer", result: "Loss" },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 65),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 65,  map: "Route 66",      mode: "Escort",     hero: "Tracer", result: "Win"  },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 34),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 34,  map: "Suravasa",      mode: "Flashpoint", hero: "Echo",   result: "Loss" }
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  8),   rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: 8,   map: "Rialto",        mode: "Escort",     hero: "Tracer", result: "Win",  vodReviewed: false },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  -24), rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: -24, map: "Lijiang Tower", mode: "Control",    hero: "Tracer", result: "Loss", vodReviewed: false },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 36),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 36,  map: "Esperança",     mode: "Push",       hero: "Tracer", result: "Loss", vodReviewed: false },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 65),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 65,  map: "Route 66",      mode: "Escort",     hero: "Tracer", result: "Win",  vodReviewed: false },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 34),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 34,  map: "Suravasa",      mode: "Flashpoint", hero: "Echo",   result: "Loss", vodReviewed: false }
   ];
   // ^ Local fallback shown until a GitHub connection loads the real data
   // (or if the person never connects at all).
@@ -133,6 +133,9 @@
   // be negative under rank protection — that's kept as-is here so text
   // displays always show the true rank/division, never a value decoded
   // back out of the (possibly demoted) graph position.
+  // vodReviewed uses !! so an older record that predates this field (and
+  // so has no vodReviewed key at all) reads as false automatically —
+  // no migration of existing matches.json entries required.
   function recordToGame(rec){
     var tierIdx = TIERS.findIndex(function(t){ return t.name === rec.rank; });
     if (tierIdx < 0) tierIdx = 0;
@@ -146,7 +149,8 @@
       hero: rec.hero,
       result: rec.result,
       goodComment: rec.goodComment || '',
-      badComment: rec.badComment || ''
+      badComment: rec.badComment || '',
+      vodReviewed: !!rec.vodReviewed
     };
   }
 
@@ -160,7 +164,8 @@
       division: g.division,
       percent: g.percent,
       goodComment: g.goodComment || '',
-      badComment: g.badComment || ''
+      badComment: g.badComment || '',
+      vodReviewed: !!g.vodReviewed
     };
   }
 
@@ -327,6 +332,7 @@
   var saveMatchBtn = document.getElementById('saveMatchBtn');
   var goodTextarea = document.getElementById('good');
   var badTextarea = document.getElementById('bad');
+  var vodCheckbox = document.getElementById('vodCheckbox');
   var formError = document.getElementById('formError');
 
   function showFormError(msg){
@@ -345,9 +351,9 @@
   }
 
   // Pre-fill hero/rank/division from whatever was last logged, since
-  // that's almost always still true for the next match. Result and
-  // percent are cleared instead of defaulted — those change every game
-  // and a stale default invites logging bad data.
+  // that's almost always still true for the next match. Result, percent,
+  // and VOD-reviewed are cleared instead of defaulted — those change
+  // every game and a stale default invites logging bad data.
   function prefillFromLastGame(){
     var last = getLastGame();
     if (last){
@@ -356,6 +362,7 @@
       if (last.division) divisionSelect.value = String(last.division);
     }
     percentInput.value = '';
+    vodCheckbox.checked = false;
     Array.prototype.forEach.call(resultToggle.querySelectorAll('.result-btn'), function(b){
       b.classList.remove('active');
     });
@@ -406,7 +413,8 @@
       hero: heroSelect.value,
       result: result,
       goodComment: goodTextarea.value,
-      badComment: badTextarea.value
+      badComment: badTextarea.value,
+      vodReviewed: vodCheckbox.checked
     };
 
     saveMatchBtn.disabled = true;
@@ -620,6 +628,8 @@
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  var TABLE_COLS = 9; // toggle, #, map, hero, result, rank, %, vod, delete
+
   function renderTable(){
     if (!ALL_GAMES.length){
       matchTableBody.innerHTML = '';
@@ -631,61 +641,127 @@
     var rowsHtml = ALL_GAMES.map(function(g, i){
       var resultColor = RESULT_COLORS[g.result] || RESULT_COLORS.Win;
       var rankText = g.rank + ' ' + romanDivision(g.division);
-      return '<tr>' +
+      var hasGood = !!(g.goodComment && g.goodComment.trim());
+      var hasBad = !!(g.badComment && g.badComment.trim());
+      var hasComments = hasGood || hasBad;
+
+      var mainRow = '<tr class="match-row">' +
+        '<td class="num"><button type="button" class="expand-toggle' + (hasComments ? '' : ' no-comments') + '" data-index="' + i + '" title="' + (hasComments ? 'Show comments' : 'No comments logged') + '">\u203a</button></td>' +
         '<td class="num">' + (i + 1) + '</td>' +
         '<td class="truncate" title="' + escapeHtml(g.map) + '">' + escapeHtml(g.map) + '</td>' +
         '<td class="truncate" title="' + escapeHtml(g.hero) + '">' + escapeHtml(g.hero) + '</td>' +
         '<td style="color:' + resultColor + '">' + escapeHtml(g.result) + '</td>' +
         '<td class="truncate" title="' + escapeHtml(rankText) + '">' + escapeHtml(rankText) + '</td>' +
         '<td class="num">' + g.percent + '%</td>' +
+        '<td class="num"><input type="checkbox" class="vod-checkbox" data-index="' + i + '"' + (g.vodReviewed ? ' checked' : '') + '></td>' +
         '<td class="num"><button type="button" class="row-delete-btn" data-index="' + i + '" title="Delete this match">\u00d7</button></td>' +
       '</tr>';
+
+      var detailContent = hasComments
+        ? (hasGood ? '<div class="detail-line"><span class="dot good"></span>' + escapeHtml(g.goodComment) + '</div>' : '') +
+          (hasBad ? '<div class="detail-line"><span class="dot bad"></span>' + escapeHtml(g.badComment) + '</div>' : '')
+        : '<div class="detail-empty">No comments logged for this match.</div>';
+
+      var detailRow = '<tr class="match-detail-row" id="detail-row-' + i + '" style="display:none;">' +
+        '<td colspan="' + TABLE_COLS + '">' + detailContent + '</td>' +
+      '</tr>';
+
+      return mainRow + detailRow;
     }).join('');
 
     matchTableBody.innerHTML = rowsHtml;
   }
 
-  // Delete a match: re-fetch the current file (avoid a stale sha), remove
-  // the record at this index, save, then drop it locally and re-render
-  // both the graph and the table.
+  // Expand/collapse a row's comments — purely local UI, no save involved.
   matchTableBody.addEventListener('click', function(e){
-    var btn = e.target.closest('.row-delete-btn');
-    if (!btn) return;
-
-    if (!ghGetToken()){
-      setGithubStatus('error', 'Connect GitHub to delete');
-      githubTokenRow.classList.add('visible');
-      githubTokenInput.focus();
+    var toggleBtn = e.target.closest('.expand-toggle');
+    if (toggleBtn){
+      var idx = toggleBtn.getAttribute('data-index');
+      var detailRow = document.getElementById('detail-row-' + idx);
+      if (!detailRow) return;
+      var isOpen = detailRow.style.display !== 'none';
+      detailRow.style.display = isOpen ? 'none' : 'table-row';
+      toggleBtn.classList.toggle('open', !isOpen);
       return;
     }
 
-    var index = parseInt(btn.getAttribute('data-index'), 10);
+    // Delete a match: re-fetch the current file (avoid a stale sha), remove
+    // the record at this index, save, then drop it locally and re-render
+    // both the graph and the table.
+    var deleteBtn = e.target.closest('.row-delete-btn');
+    if (deleteBtn){
+      if (!ghGetToken()){
+        setGithubStatus('error', 'Connect GitHub to delete');
+        githubTokenRow.classList.add('visible');
+        githubTokenInput.focus();
+        return;
+      }
+
+      var index = parseInt(deleteBtn.getAttribute('data-index'), 10);
+      var g = ALL_GAMES[index];
+      if (!g) return;
+
+      var label = g.map + ' \u2014 ' + g.rank + ' ' + romanDivision(g.division) + ' (' + g.percent + '%)';
+      if (!window.confirm('Delete match #' + (index + 1) + ': ' + label + '?')) return;
+
+      Array.prototype.forEach.call(matchTableBody.querySelectorAll('.row-delete-btn'), function(b){
+        b.disabled = true;
+      });
+      setGithubStatus('', 'Deleting\u2026');
+
+      ghFetchMatches().then(function(records){
+        records.splice(index, 1);
+        return ghSaveMatches(records, 'Delete match: ' + label);
+      }).then(function(){
+        ALL_GAMES.splice(index, 1);
+        render();
+        renderTable();
+        prefillFromLastGame();
+        setGithubStatus('ok', 'Synced');
+      }).catch(function(err){
+        setGithubStatus('error', 'Delete failed');
+        console.error(err);
+        Array.prototype.forEach.call(matchTableBody.querySelectorAll('.row-delete-btn'), function(b){
+          b.disabled = false;
+        });
+      });
+    }
+  });
+
+  // VOD-reviewed checkbox: toggling a row updates that one record in
+  // matches.json directly, without needing to re-open the match in the form.
+  matchTableBody.addEventListener('change', function(e){
+    var checkbox = e.target.closest('.vod-checkbox');
+    if (!checkbox) return;
+
+    var index = parseInt(checkbox.getAttribute('data-index'), 10);
     var g = ALL_GAMES[index];
     if (!g) return;
 
-    var label = g.map + ' \u2014 ' + g.rank + ' ' + romanDivision(g.division) + ' (' + g.percent + '%)';
-    if (!window.confirm('Delete match #' + (index + 1) + ': ' + label + '?')) return;
+    if (!ghGetToken()){
+      setGithubStatus('error', 'Connect GitHub to save');
+      githubTokenRow.classList.add('visible');
+      githubTokenInput.focus();
+      checkbox.checked = !checkbox.checked;
+      return;
+    }
 
-    Array.prototype.forEach.call(matchTableBody.querySelectorAll('.row-delete-btn'), function(b){
-      b.disabled = true;
-    });
-    setGithubStatus('', 'Deleting\u2026');
+    var newVal = checkbox.checked;
+    checkbox.disabled = true;
+    setGithubStatus('', 'Saving\u2026');
 
     ghFetchMatches().then(function(records){
-      records.splice(index, 1);
-      return ghSaveMatches(records, 'Delete match: ' + label);
+      if (records[index]) records[index].vodReviewed = newVal;
+      return ghSaveMatches(records, (newVal ? 'Mark' : 'Unmark') + ' VOD reviewed: match #' + (index + 1));
     }).then(function(){
-      ALL_GAMES.splice(index, 1);
-      render();
-      renderTable();
-      prefillFromLastGame();
+      g.vodReviewed = newVal;
       setGithubStatus('ok', 'Synced');
+      checkbox.disabled = false;
     }).catch(function(err){
-      setGithubStatus('error', 'Delete failed');
+      setGithubStatus('error', 'Save failed');
       console.error(err);
-      Array.prototype.forEach.call(matchTableBody.querySelectorAll('.row-delete-btn'), function(b){
-        b.disabled = false;
-      });
+      checkbox.checked = !newVal;
+      checkbox.disabled = false;
     });
   });
 
