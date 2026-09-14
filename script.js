@@ -654,7 +654,7 @@
         '<td style="color:' + resultColor + '">' + escapeHtml(g.result) + '</td>' +
         '<td class="truncate" title="' + escapeHtml(rankText) + '">' + escapeHtml(rankText) + '</td>' +
         '<td class="num">' + g.percent + '%</td>' +
-        '<td class="num"><input type="checkbox" class="vod-checkbox" data-index="' + i + '"' + (g.vodReviewed ? ' checked' : '') + '></td>' +
+        '<td class="num"><label class="table-checkbox-wrap"><input type="checkbox" class="vod-checkbox" data-index="' + i + '"' + (g.vodReviewed ? ' checked' : '') + '><span class="checkbox-box"></span></label></td>' +
         '<td class="num"><button type="button" class="row-delete-btn" data-index="' + i + '" title="Delete this match">\u00d7</button></td>' +
       '</tr>';
 

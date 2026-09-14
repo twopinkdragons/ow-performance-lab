@@ -288,6 +288,7 @@
     font-size: 14px;
     color: var(--text);
     cursor: pointer;
+    position: relative;
   }
 
   /* ---- Comments ---- */
@@ -651,27 +652,48 @@
     font-style: italic;
   }
 
+  /* The real checkbox stays interactive/accessible but visually hidden;
+     .checkbox-box is the thing actually drawn, styled off the real
+     checkbox's :checked state via the sibling selector below. This avoids
+     relying on `appearance: none`, which some browsers (Firefox in
+     particular, without -moz-appearance) ignore, silently falling back to
+     the native control and undoing all of this styling. */
   .vod-checkbox{
-    appearance: none;
-    -webkit-appearance: none;
+    position: absolute;
+    opacity: 0;
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .table-checkbox-wrap{
+    position: relative;
+    display: inline-flex;
+    width: 15px;
+    height: 15px;
+    vertical-align: middle;
+  }
+
+  .checkbox-box{
+    display: inline-block;
     width: 15px;
     height: 15px;
     min-width: 15px;
     border: 1px solid var(--line);
     border-radius: 3px;
     background: var(--surface-raised);
-    cursor: pointer;
     position: relative;
-    vertical-align: middle;
-    margin: 0;
+    flex-shrink: 0;
+    pointer-events: none;
   }
 
-  .vod-checkbox:checked{
+  .vod-checkbox:checked + .checkbox-box{
     background: #5FD9C7;
     border-color: #5FD9C7;
   }
 
-  .vod-checkbox:checked::after{
+  .vod-checkbox:checked + .checkbox-box::after{
     content: "";
     position: absolute;
     left: 4px;
@@ -683,7 +705,12 @@
     transform: rotate(45deg);
   }
 
-  .vod-checkbox:disabled{
+  .vod-checkbox:focus-visible + .checkbox-box{
+    outline: 2px solid #5FD9C7;
+    outline-offset: 1px;
+  }
+
+  .vod-checkbox:disabled + .checkbox-box{
     opacity: 0.5;
     cursor: default;
   }
