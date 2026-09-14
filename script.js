@@ -654,7 +654,7 @@
         '<td style="color:' + resultColor + '">' + escapeHtml(g.result) + '</td>' +
         '<td class="truncate" title="' + escapeHtml(rankText) + '">' + escapeHtml(rankText) + '</td>' +
         '<td class="num">' + g.percent + '%</td>' +
-        '<td class="num"><label class="table-checkbox-wrap"><input type="checkbox" class="vod-checkbox" data-index="' + i + '"' + (g.vodReviewed ? ' checked' : '') + '><span class="checkbox-box"></span></label></td>' +
+        '<td class="num"><span class="checkbox-box' + (g.vodReviewed ? ' checked' : '') + '" title="VOD reviewed: ' + (g.vodReviewed ? 'Yes' : 'No') + '"></span></td>' +
         '<td class="num"><button type="button" class="row-delete-btn" data-index="' + i + '" title="Delete this match">\u00d7</button></td>' +
       '</tr>';
 
@@ -727,43 +727,6 @@
         });
       });
     }
-  });
-
-  // VOD-reviewed checkbox: toggling a row updates that one record in
-  // matches.json directly, without needing to re-open the match in the form.
-  matchTableBody.addEventListener('change', function(e){
-    var checkbox = e.target.closest('.vod-checkbox');
-    if (!checkbox) return;
-
-    var index = parseInt(checkbox.getAttribute('data-index'), 10);
-    var g = ALL_GAMES[index];
-    if (!g) return;
-
-    if (!ghGetToken()){
-      setGithubStatus('error', 'Connect GitHub to save');
-      githubTokenRow.classList.add('visible');
-      githubTokenInput.focus();
-      checkbox.checked = !checkbox.checked;
-      return;
-    }
-
-    var newVal = checkbox.checked;
-    checkbox.disabled = true;
-    setGithubStatus('', 'Saving\u2026');
-
-    ghFetchMatches().then(function(records){
-      if (records[index]) records[index].vodReviewed = newVal;
-      return ghSaveMatches(records, (newVal ? 'Mark' : 'Unmark') + ' VOD reviewed: match #' + (index + 1));
-    }).then(function(){
-      g.vodReviewed = newVal;
-      setGithubStatus('ok', 'Synced');
-      checkbox.disabled = false;
-    }).catch(function(err){
-      setGithubStatus('error', 'Save failed');
-      console.error(err);
-      checkbox.checked = !newVal;
-      checkbox.disabled = false;
-    });
   });
 
   svg.addEventListener('pointermove', function(e){

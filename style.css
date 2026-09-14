@@ -652,12 +652,15 @@
     font-style: italic;
   }
 
-  /* The real checkbox stays interactive/accessible but visually hidden;
-     .checkbox-box is the thing actually drawn, styled off the real
-     checkbox's :checked state via the sibling selector below. This avoids
-     relying on `appearance: none`, which some browsers (Firefox in
-     particular, without -moz-appearance) ignore, silently falling back to
-     the native control and undoing all of this styling. */
+  /* The real checkbox (used only in the entry form) stays interactive/
+     accessible but visually hidden; .checkbox-box is the thing actually
+     drawn, styled off the real checkbox's :checked state via the sibling
+     selector below. This avoids relying on `appearance: none`, which some
+     browsers (Firefox in particular, without -moz-appearance) ignore,
+     silently falling back to the native control and undoing all of this
+     styling. The table's copy is read-only, so it skips the real input
+     entirely and just gets the .checked class added directly — same visual
+     result, but with no click target and nothing to toggle. */
   .vod-checkbox{
     position: absolute;
     opacity: 0;
@@ -665,14 +668,6 @@
     height: 15px;
     margin: 0;
     cursor: pointer;
-  }
-
-  .table-checkbox-wrap{
-    position: relative;
-    display: inline-flex;
-    width: 15px;
-    height: 15px;
-    vertical-align: middle;
   }
 
   .checkbox-box{
@@ -686,14 +681,17 @@
     position: relative;
     flex-shrink: 0;
     pointer-events: none;
+    vertical-align: middle;
   }
 
-  .vod-checkbox:checked + .checkbox-box{
+  .vod-checkbox:checked + .checkbox-box,
+  .checkbox-box.checked{
     background: #5FD9C7;
     border-color: #5FD9C7;
   }
 
-  .vod-checkbox:checked + .checkbox-box::after{
+  .vod-checkbox:checked + .checkbox-box::after,
+  .checkbox-box.checked::after{
     content: "";
     position: absolute;
     left: 4px;
