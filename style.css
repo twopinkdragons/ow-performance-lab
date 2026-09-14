@@ -23,14 +23,14 @@
   }
 
   .page{
-    max-width: 1240px;
+    max-width: 1440px;
     margin: 0 auto;
     padding: 48px 24px 96px;
   }
 
   .layout{
     display: grid;
-    grid-template-columns: minmax(0, 780px) 420px;
+    grid-template-columns: minmax(0, 780px) 580px;
     gap: 28px;
     align-items: start;
   }
