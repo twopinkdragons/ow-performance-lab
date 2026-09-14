@@ -207,5 +207,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-09-13"
+  },
+  {
+    "map": "Aatlis",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Champion",
+    "division": 1,
+    "percent": 99,
+    "goodComment": "",
+    "badComment": "",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-09-13"
   }
 ]
