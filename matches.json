@@ -298,5 +298,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-09-16"
+  },
+  {
+    "map": "Shambali Monastery",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 33,
+    "goodComment": "Surprised people all the time. Moira couldn't stop dying to me",
+    "badComment": "I struggled against Genji. Good game overall though",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-09-16"
   }
 ]
