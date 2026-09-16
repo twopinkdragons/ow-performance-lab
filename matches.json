@@ -272,5 +272,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-09-16"
+  },
+  {
+    "map": "Ilios",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 2,
+    "percent": 63,
+    "goodComment": "Got great picks on the first round",
+    "badComment": "Took duels with Reaper",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-09-16"
   }
 ]
