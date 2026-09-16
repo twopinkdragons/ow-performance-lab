@@ -285,5 +285,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-09-16"
+  },
+  {
+    "map": "Ilios",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 2,
+    "percent": 92,
+    "goodComment": "Did well surprising people. Good tracer gameplay",
+    "badComment": "Sometimes got lost in blinks. Work on mechanics in general. Also shooting in the open",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-09-16"
   }
 ]
