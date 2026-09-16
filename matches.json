@@ -246,5 +246,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-09-16"
+  },
+  {
+    "map": "Lijiang Tower",
+    "hero": "Echo",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 2,
+    "percent": 63,
+    "goodComment": "Good angles.",
+    "badComment": "Tough game. Did not finish picks well or find the place to get in beam range",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-09-16"
   }
 ]
