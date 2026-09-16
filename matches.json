@@ -220,5 +220,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-09-14"
+  },
+  {
+    "map": "Ilios",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 2,
+    "percent": 70,
+    "goodComment": "",
+    "badComment": "Played against higher ranked players who punished me out of position. Very bad game :(",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-09-16"
   }
 ]
