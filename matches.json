@@ -311,5 +311,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-09-16"
+  },
+  {
+    "map": "Eichenwalde",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 1,
+    "percent": -3,
+    "goodComment": "Great bombs (but did kinda lucky)",
+    "badComment": "Too much downtime, could've been shooting and distracting the enemy team (also my sierra died 16 times)",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-09-21"
   }
 ]
