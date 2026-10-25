@@ -389,5 +389,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-10-25"
+  },
+  {
+    "map": "Circuit Royal",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 2,
+    "percent": 86,
+    "goodComment": "Good game",
+    "badComment": "A few bad engages with poor blink management, and a bit greedy on a mercy kill got me deleted",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-10-25"
   }
 ]
