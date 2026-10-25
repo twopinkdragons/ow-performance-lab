@@ -324,5 +324,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-09-21"
+  },
+  {
+    "map": "Oasis",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 2,
+    "percent": 38,
+    "goodComment": "",
+    "badComment": "",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-10-25"
   }
 ]
