@@ -415,5 +415,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-10-25"
+  },
+  {
+    "map": "Circuit Royal",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 56,
+    "goodComment": "Pretty decent game overall. Did well tracking Moira's cooldowns",
+    "badComment": "Really need to be more aware of Cassidy's location. Took way too many flashbangs to the face",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-10-25"
   }
 ]
