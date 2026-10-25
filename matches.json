@@ -428,5 +428,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-10-25"
+  },
+  {
+    "map": "Circuit Royal",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 93,
+    "goodComment": "Did well surprising people",
+    "badComment": "Got hindered once and led to death. Need to be more aware of the Cassidy's cooldowns & location",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-10-25"
   }
 ]
