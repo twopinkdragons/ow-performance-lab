@@ -376,5 +376,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-10-25"
+  },
+  {
+    "map": "Havana",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 2,
+    "percent": 53,
+    "goodComment": "Team was really good...",
+    "badComment": "Pushed in from the front and burned recall frequently",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-10-25"
   }
 ]
