@@ -350,5 +350,18 @@
     "vodReviewed": false,
     "leaverThrower": true,
     "date": "2026-10-25"
+  },
+  {
+    "map": "Junkertown",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 2,
+    "percent": 55,
+    "goodComment": "Insane game did very well",
+    "badComment": "Greeded recall a few times and lost a few points because of it",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-10-25"
   }
 ]
