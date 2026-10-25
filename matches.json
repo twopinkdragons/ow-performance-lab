@@ -337,5 +337,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-10-25"
+  },
+  {
+    "map": "King's Row",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 2,
+    "percent": 18,
+    "goodComment": "Did well",
+    "badComment": "Throwing tank",
+    "vodReviewed": false,
+    "leaverThrower": true,
+    "date": "2026-10-25"
   }
 ]
