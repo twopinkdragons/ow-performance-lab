@@ -402,5 +402,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-10-25"
+  },
+  {
+    "map": "Circuit Royal",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 19,
+    "goodComment": "",
+    "badComment": "Super careless, greedy, ego 1v1s... surprised we won",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-10-25"
   }
 ]
