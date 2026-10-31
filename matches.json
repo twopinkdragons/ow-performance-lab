@@ -480,5 +480,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-10-31"
+  },
+  {
+    "map": "New Junk City",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 26,
+    "goodComment": "",
+    "badComment": "",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-10-31"
   }
 ]
