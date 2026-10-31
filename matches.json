@@ -506,5 +506,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-10-31"
+  },
+  {
+    "map": "Dorado",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 88,
+    "goodComment": "",
+    "badComment": "",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-10-31"
   }
 ]
