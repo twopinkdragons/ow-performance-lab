@@ -467,5 +467,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-10-31"
+  },
+  {
+    "map": "Ilios",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 1,
+    "percent": -1,
+    "goodComment": "",
+    "badComment": "Died way too often, couldn't figure out where Cassidy was hiding. Needed to disengage after soldier rockets. Could've been on the backline more. ",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-10-31"
   }
 ]
