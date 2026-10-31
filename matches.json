@@ -457,19 +457,6 @@
   },
   {
     "map": "Watchpoint: Gibraltar",
-    "hero": "Echo",
-    "result": "Win",
-    "rank": "Gold",
-    "division": 1,
-    "percent": 29,
-    "goodComment": "Really good game. Took great angles.",
-    "badComment": "(Forgot to log some previous losses) Greeded recall once in a 1v1, could've won with just the first point if I didn't.",
-    "vodReviewed": false,
-    "leaverThrower": false,
-    "date": "2026-10-31"
-  },
-  {
-    "map": "Watchpoint: Gibraltar",
     "hero": "Tracer",
     "result": "Win",
     "rank": "Gold",
