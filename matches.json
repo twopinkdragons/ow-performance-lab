@@ -532,5 +532,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-10-31"
+  },
+  {
+    "map": "Circuit Royal",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Platinum",
+    "division": 5,
+    "percent": -7,
+    "goodComment": "This was a very difficult game but definitely played my best... tank bronze 2",
+    "badComment": "Waited too long on reengages, initial engage was typically too far, and stayed down main for too long",
+    "vodReviewed": true,
+    "leaverThrower": false,
+    "date": "2026-11-01"
   }
 ]
