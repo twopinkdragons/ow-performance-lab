@@ -545,5 +545,18 @@
     "vodReviewed": true,
     "leaverThrower": false,
     "date": "2026-11-01"
+  },
+  {
+    "map": "Circuit Royal",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 63,
+    "goodComment": "",
+    "badComment": "Disengage deeper, not back to team. Use healthpacks in the tracer duel. Stared at two firestrikes to the face? Disengage when the fight is lost.",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-01"
   }
 ]
