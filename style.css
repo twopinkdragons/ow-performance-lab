@@ -658,6 +658,7 @@
     font-size: 12px;
     color: var(--text);
     margin-bottom: 4px;
+    white-space: pre-wrap;
   }
 
   .detail-line:last-child{

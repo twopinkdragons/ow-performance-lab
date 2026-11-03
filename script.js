@@ -63,11 +63,11 @@
   var ROMAN_TO_DIVISION = { I: 1, II: 2, III: 3, IV: 4, V: 5 };
 
   var ALL_GAMES = [
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  8),   rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: 8,   map: "Rialto",        mode: "Escort",     hero: "Tracer", result: "Win",  vodReviewed: false, leaverThrower: false },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  -24), rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: -24, map: "Lijiang Tower", mode: "Control",    hero: "Tracer", result: "Loss", vodReviewed: false, leaverThrower: false },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 36),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 36,  map: "Esperança",     mode: "Push",       hero: "Tracer", result: "Loss", vodReviewed: false, leaverThrower: false },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 65),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 65,  map: "Route 66",      mode: "Escort",     hero: "Tracer", result: "Win",  vodReviewed: false, leaverThrower: false },
-    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 34),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 34,  map: "Suravasa",      mode: "Flashpoint", hero: "Echo",   result: "Loss", vodReviewed: false, leaverThrower: false }
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  8),   rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: 8,   map: "Rialto",        hero: "Tracer", result: "Win",  vodReviewed: false, leaverThrower: false },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.II,  -24), rank: "Gold", division: ROMAN_TO_DIVISION.II,  percent: -24, map: "Lijiang Tower", hero: "Tracer", result: "Loss", vodReviewed: false, leaverThrower: false },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 36),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 36,  map: "Esperança",     hero: "Tracer", result: "Loss", vodReviewed: false, leaverThrower: false },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 65),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 65,  map: "Route 66",      hero: "Tracer", result: "Win",  vodReviewed: false, leaverThrower: false },
+    { v: valueOf(GOLD_IDX, ROMAN_TO_DIVISION.III, 34),  rank: "Gold", division: ROMAN_TO_DIVISION.III, percent: 34,  map: "Suravasa",      hero: "Echo",   result: "Loss", vodReviewed: false, leaverThrower: false }
   ];
   // ^ Local fallback shown until a GitHub connection loads the real data
   // (or if the person never connects at all).
@@ -145,7 +145,6 @@
       division: rec.division,
       percent: rec.percent,
       map: rec.map,
-      mode: rec.mode,
       hero: rec.hero,
       result: rec.result,
       goodComment: rec.goodComment || '',
@@ -159,7 +158,6 @@
   function gameToRecord(g){
     return {
       map: g.map,
-      mode: g.mode,
       hero: g.hero,
       result: g.result,
       rank: g.rank,
@@ -773,7 +771,7 @@
       var result = target.getAttribute('data-result');
       var resultColor = RESULT_COLORS[result] || RESULT_COLORS.Win;
       tooltipEl.style.borderColor = resultColor;
-      tooltipEl.innerHTML = '<div class="tt-main" style="color:' + ptColor + '">' + parts2[0] + '</div><div class="tt-sub">' + (parts2[1] || '') + '</div>';
+      tooltipEl.innerHTML = '<div class="tt-main" style="color:' + ptColor + '">' + escapeHtml(parts2[0]) + '</div><div class="tt-sub">' + escapeHtml(parts2[1] || '') + '</div>';
       tooltipEl.style.display = 'block';
       tooltipEl.style.left = (e.clientX + 14) + 'px';
       tooltipEl.style.top = (e.clientY + 14) + 'px';
