@@ -597,5 +597,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-11-02"
+  },
+  {
+    "map": "Busan",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 8,
+    "goodComment": "",
+    "badComment": "Too long of rotations meant very late engage timings. Too far away when beginning engages.",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-02"
   }
 ]
