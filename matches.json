@@ -610,5 +610,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-11-02"
+  },
+  {
+    "map": "Runasapi",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 1,
+    "percent": -22,
+    "goodComment": "Did well surprising.",
+    "badComment": "Cassidy flashbangs - at least 6 all game to the face. After surprising, need to stay alive. Be aware of flashbang when attention is grabbed.",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-02"
   }
 ]
