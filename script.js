@@ -663,6 +663,65 @@
 
   var TABLE_COLS = 11; // toggle, #, date, map, hero, result, rank, %, vod, leaver/thrower, delete
 
+  var openRows = {};         // index -> true while that row's comments are expanded
+  var editingComment = null; // { index, field } while a comment is being edited
+  var tableBusy = false;     // true while a checkmark or comment save is in flight
+
+  var PENCIL_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+
+  function matchLabel(g){
+    return g.map + ' — ' + g.rank + ' ' + romanDivision(g.division) + ' (' + g.percent + '%)';
+  }
+
+  function promptForToken(msg){
+    setGithubStatus('error', msg);
+    githubTokenRow.classList.add('visible');
+    githubTokenInput.focus();
+  }
+
+  // Re-fetch the file, change one record, save it, then mirror the change locally.
+  function updateMatchRecord(index, changes, message){
+    tableBusy = true;
+    setGithubStatus('', 'Saving…');
+    return ghFetchMatches().then(function(records){
+      if (!records[index]) throw new Error('No saved record at index ' + index);
+      Object.keys(changes).forEach(function(k){ records[index][k] = changes[k]; });
+      return ghSaveMatches(records, message);
+    }).then(function(){
+      Object.keys(changes).forEach(function(k){ ALL_GAMES[index][k] = changes[k]; });
+      setGithubStatus('ok', 'Synced');
+      return true;
+    }).catch(function(err){
+      setGithubStatus('error', 'Save failed');
+      console.error(err);
+      return false;
+    }).then(function(ok){
+      tableBusy = false;
+      return ok;
+    });
+  }
+
+  // One comment line in the expanded detail row. While this comment is being
+  // edited, the line becomes a textarea with Save / Cancel instead.
+  function commentLineHtml(g, i, field, dotClass){
+    var text = g[field];
+    var isEditing = editingComment && editingComment.index === i && editingComment.field === field;
+    if (isEditing){
+      return '<div class="detail-line comment-editor"><span class="dot ' + dotClass + '"></span>' +
+        '<div class="comment-edit-wrap">' +
+          '<textarea class="comment-edit-input">' + escapeHtml(text) + '</textarea>' +
+          '<div class="comment-edit-actions">' +
+            '<button type="button" class="mini-btn comment-cancel-btn">Cancel</button>' +
+            '<button type="button" class="mini-btn comment-save-btn" data-index="' + i + '" data-field="' + field + '">Save</button>' +
+          '</div>' +
+        '</div></div>';
+    }
+    return '<div class="detail-line"><span class="dot ' + dotClass + '"></span>' +
+      '<span class="detail-text">' + escapeHtml(text) + '</span>' +
+      '<button type="button" class="edit-comment-btn" data-index="' + i + '" data-field="' + field + '" title="Edit comment" aria-label="Edit comment">' + PENCIL_SVG + '</button>' +
+    '</div>';
+  }
+
   function renderTable(){
     if (!ALL_GAMES.length){
       matchTableBody.innerHTML = '';
@@ -679,7 +738,7 @@
       var hasComments = hasGood || hasBad;
 
       var mainRow = '<tr class="match-row">' +
-        '<td class="num"><button type="button" class="expand-toggle' + (hasComments ? '' : ' no-comments') + '" data-index="' + i + '" title="' + (hasComments ? 'Show comments' : 'No comments logged') + '">\u203a</button></td>' +
+        '<td class="num"><button type="button" class="expand-toggle' + (hasComments ? '' : ' no-comments') + (openRows[i] ? ' open' : '') + '" data-index="' + i + '" title="' + (hasComments ? 'Show comments' : 'No comments logged') + '">\u203a</button></td>' +
         '<td class="num">' + (i + 1) + '</td>' +
         '<td class="truncate" title="' + (g.date || 'Not recorded') + '">' + formatDateShort(g.date) + '</td>' +
         '<td class="truncate" title="' + escapeHtml(g.map) + '">' + escapeHtml(g.map) + '</td>' +
@@ -687,17 +746,17 @@
         '<td style="color:' + resultColor + '">' + escapeHtml(g.result) + '</td>' +
         '<td class="truncate" title="' + escapeHtml(rankText) + '">' + escapeHtml(rankText) + '</td>' +
         '<td class="num">' + g.percent + '%</td>' +
-        '<td class="num"><span class="checkbox-box' + (g.vodReviewed ? ' checked' : '') + '" title="VOD reviewed: ' + (g.vodReviewed ? 'Yes' : 'No') + '"></span></td>' +
-        '<td class="num"><span class="checkbox-box' + (g.leaverThrower ? ' checked' : '') + '" title="Leaver/Thrower: ' + (g.leaverThrower ? 'Yes' : 'No') + '"></span></td>' +
+        '<td class="num"><button type="button" class="checkbox-toggle" data-index="' + i + '" data-field="vodReviewed" title="VOD reviewed: ' + (g.vodReviewed ? 'Yes' : 'No') + '"><span class="checkbox-box' + (g.vodReviewed ? ' checked' : '') + '"></span></button></td>' +
+        '<td class="num"><button type="button" class="checkbox-toggle" data-index="' + i + '" data-field="leaverThrower" title="Leaver/Thrower: ' + (g.leaverThrower ? 'Yes' : 'No') + '"><span class="checkbox-box' + (g.leaverThrower ? ' checked' : '') + '"></span></button></td>' +
         '<td class="num"><button type="button" class="row-delete-btn" data-index="' + i + '" title="Delete this match">\u00d7</button></td>' +
       '</tr>';
 
       var detailContent = hasComments
-        ? (hasGood ? '<div class="detail-line"><span class="dot good"></span>' + escapeHtml(g.goodComment) + '</div>' : '') +
-          (hasBad ? '<div class="detail-line"><span class="dot bad"></span>' + escapeHtml(g.badComment) + '</div>' : '')
+        ? (hasGood ? commentLineHtml(g, i, 'goodComment', 'good') : '') +
+          (hasBad ? commentLineHtml(g, i, 'badComment', 'bad') : '')
         : '<div class="detail-empty">No comments logged for this match.</div>';
 
-      var detailRow = '<tr class="match-detail-row" id="detail-row-' + i + '" style="display:none;">' +
+      var detailRow = '<tr class="match-detail-row" id="detail-row-' + i + '" style="display:' + (openRows[i] ? 'table-row' : 'none') + ';">' +
         '<td colspan="' + TABLE_COLS + '">' + detailContent + '</td>' +
       '</tr>';
 
@@ -707,16 +766,85 @@
     matchTableBody.innerHTML = rowsHtml;
   }
 
-  // Expand/collapse a row's comments — purely local UI, no save involved.
   matchTableBody.addEventListener('click', function(e){
+    // Expand/collapse a row's comments — local UI only, no save involved.
     var toggleBtn = e.target.closest('.expand-toggle');
     if (toggleBtn){
-      var idx = toggleBtn.getAttribute('data-index');
+      var idx = parseInt(toggleBtn.getAttribute('data-index'), 10);
       var detailRow = document.getElementById('detail-row-' + idx);
       if (!detailRow) return;
-      var isOpen = detailRow.style.display !== 'none';
-      detailRow.style.display = isOpen ? 'none' : 'table-row';
-      toggleBtn.classList.toggle('open', !isOpen);
+      var nowOpen = !openRows[idx];
+      openRows[idx] = nowOpen;
+      detailRow.style.display = nowOpen ? 'table-row' : 'none';
+      toggleBtn.classList.toggle('open', nowOpen);
+      return;
+    }
+
+    // VOD / Leaver-Thrower checkmarks: flip the flag, save, then re-render.
+    var checkBtn = e.target.closest('.checkbox-toggle');
+    if (checkBtn){
+      if (tableBusy) return;
+      if (!ghGetToken()){ promptForToken('Connect GitHub to edit'); return; }
+      var cIdx = parseInt(checkBtn.getAttribute('data-index'), 10);
+      var cField = checkBtn.getAttribute('data-field');
+      var cGame = ALL_GAMES[cIdx];
+      if (!cGame) return;
+      var cChanges = {};
+      cChanges[cField] = !cGame[cField];
+      editingComment = null; // a checkmark click cancels any open comment edit
+      var cName = cField === 'vodReviewed' ? 'VOD reviewed' : 'Leaver/thrower';
+      updateMatchRecord(cIdx, cChanges, cName + (cChanges[cField] ? ' on' : ' off') + ': ' + matchLabel(cGame))
+        .then(function(){ renderTable(); });
+      return;
+    }
+
+    // Comment editing: pencil opens an editor, Cancel closes it, Save writes it.
+    var editBtn = e.target.closest('.edit-comment-btn');
+    if (editBtn){
+      if (tableBusy) return;
+      editingComment = {
+        index: parseInt(editBtn.getAttribute('data-index'), 10),
+        field: editBtn.getAttribute('data-field')
+      };
+      renderTable();
+      var editor = matchTableBody.querySelector('.comment-edit-input');
+      if (editor){
+        editor.focus();
+        editor.setSelectionRange(editor.value.length, editor.value.length);
+      }
+      return;
+    }
+
+    var cancelBtn = e.target.closest('.comment-cancel-btn');
+    if (cancelBtn){
+      editingComment = null;
+      renderTable();
+      return;
+    }
+
+    var saveCommentBtn = e.target.closest('.comment-save-btn');
+    if (saveCommentBtn){
+      if (tableBusy) return;
+      if (!ghGetToken()){ promptForToken('Connect GitHub to edit'); return; }
+      var sIdx = parseInt(saveCommentBtn.getAttribute('data-index'), 10);
+      var sField = saveCommentBtn.getAttribute('data-field');
+      var sGame = ALL_GAMES[sIdx];
+      var sEditor = matchTableBody.querySelector('.comment-edit-input');
+      if (!sGame || !sEditor) return;
+      var sChanges = {};
+      sChanges[sField] = sEditor.value;
+      var sName = sField === 'goodComment' ? 'What went well' : 'What went wrong';
+      saveCommentBtn.disabled = true;
+      updateMatchRecord(sIdx, sChanges, 'Edit comment (' + sName + '): ' + matchLabel(sGame))
+        .then(function(ok){
+          if (ok){
+            editingComment = null;
+            renderTable();
+          } else {
+            // Keep the editor open so the typed text isn't lost.
+            saveCommentBtn.disabled = false;
+          }
+        });
       return;
     }
 
@@ -749,6 +877,8 @@
         return ghSaveMatches(records, 'Delete match: ' + label);
       }).then(function(){
         ALL_GAMES.splice(index, 1);
+        openRows = {};
+        editingComment = null;
         render();
         renderTable();
         prefillFromLastGame();
