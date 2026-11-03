@@ -558,5 +558,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-11-01"
+  },
+  {
+    "map": "Runasapi",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 37,
+    "goodComment": "",
+    "badComment": "Peeking main, greeding recall",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-02"
   }
 ]
