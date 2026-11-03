@@ -751,10 +751,9 @@
         '<td class="num"><button type="button" class="row-delete-btn" data-index="' + i + '" title="Delete this match">\u00d7</button></td>' +
       '</tr>';
 
-      var detailContent = hasComments
-        ? (hasGood ? commentLineHtml(g, i, 'goodComment', 'good') : '') +
-          (hasBad ? commentLineHtml(g, i, 'badComment', 'bad') : '')
-        : '<div class="detail-empty">No comments logged for this match.</div>';
+      // Both comment lines always appear, even when empty, so each one can be edited.
+      var detailContent = commentLineHtml(g, i, 'goodComment', 'good') +
+        commentLineHtml(g, i, 'badComment', 'bad');
 
       var detailRow = '<tr class="match-detail-row" id="detail-row-' + i + '" style="display:' + (openRows[i] ? 'table-row' : 'none') + ';">' +
         '<td colspan="' + TABLE_COLS + '">' + detailContent + '</td>' +
