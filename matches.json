@@ -571,5 +571,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-11-02"
+  },
+  {
+    "map": "New Junk City",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 9,
+    "goodComment": "",
+    "badComment": "Need better target priority. Barely shot at Ashe all game, even though that was one of the easier people to kill on the team.",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-02"
   }
 ]
