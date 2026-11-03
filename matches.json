@@ -649,5 +649,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-11-02"
+  },
+  {
+    "map": "Junkertown",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 9,
+    "goodComment": "",
+    "badComment": "",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-02"
   }
 ]
