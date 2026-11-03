@@ -636,5 +636,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-11-02"
+  },
+  {
+    "map": "Hollywood",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 1,
+    "percent": -21,
+    "goodComment": "",
+    "badComment": "Engage timing?",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-02"
   }
 ]
