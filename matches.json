@@ -688,5 +688,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-11-07"
+  },
+  {
+    "map": "Eichenwalde",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 1,
+    "percent": -19,
+    "goodComment": "",
+    "badComment": "TODO VOD",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-07"
   }
 ]
