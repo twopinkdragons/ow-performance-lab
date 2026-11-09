@@ -636,5 +636,70 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-11-02"
+  },
+  {
+    "map": "Hollywood",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 1,
+    "percent": -21,
+    "goodComment": "",
+    "badComment": "Engage timing?",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-02"
+  },
+  {
+    "map": "Junkertown",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 9,
+    "goodComment": "",
+    "badComment": "",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-02"
+  },
+  {
+    "map": "Neon Junction",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 1,
+    "percent": -19,
+    "goodComment": "",
+    "badComment": "",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-02"
+  },
+  {
+    "map": "Numbani",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 6,
+    "goodComment": "Good game. Had loads of damage, very high uptime, and into monkey/brig.",
+    "badComment": "",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-07"
+  },
+  {
+    "map": "Eichenwalde",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 1,
+    "percent": -19,
+    "goodComment": "",
+    "badComment": "TODO VOD",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-07"
   }
 ]
