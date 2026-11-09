@@ -546,8 +546,6 @@
   .stats-grid{
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: repeat(2, auto);
-    grid-auto-flow: column;   /* fill down each column: ELO, maps, VOD/LT */
     gap: 12px;
   }
 
@@ -587,7 +585,7 @@
   }
 
   @media (max-width: 560px){
-    .stats-grid{ grid-template-columns: 1fr 1fr; grid-template-rows: none; grid-auto-flow: row; }
+    .stats-grid{ grid-template-columns: 1fr 1fr; }
   }
 
   /* ---- Match history table ---- */
