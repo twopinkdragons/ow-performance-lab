@@ -546,6 +546,8 @@
   .stats-grid{
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;   /* fill down each column: ELO, maps, VOD/LT */
     gap: 12px;
   }
 
@@ -575,7 +577,7 @@
 
   .stat-value.good{ color: var(--good); }
   .stat-value.bad{ color: var(--bad); }
-  .stat-value.vod{ color: #6ba5ef; }   /* blue, same as the Diamond tier color */
+  .stat-value.vod{ color: #9ec9f5; }   /* soft pastel blue */
   .stat-value.lt{ color: #ff4d4d; }    /* stark red for leaver/thrower rate */
 
   .stat-sub{
@@ -585,7 +587,7 @@
   }
 
   @media (max-width: 560px){
-    .stats-grid{ grid-template-columns: 1fr 1fr; }
+    .stats-grid{ grid-template-columns: 1fr 1fr; grid-template-rows: none; grid-auto-flow: row; }
   }
 
   /* ---- Match history table ---- */
