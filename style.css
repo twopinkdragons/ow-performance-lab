@@ -575,6 +575,8 @@
 
   .stat-value.good{ color: var(--good); }
   .stat-value.bad{ color: var(--bad); }
+  .stat-value.vod{ color: #6ba5ef; }   /* blue, same as the Diamond tier color */
+  .stat-value.lt{ color: #ff4d4d; }    /* stark red for leaver/thrower rate */
 
   .stat-sub{
     font-size: 12px;
