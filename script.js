@@ -520,6 +520,91 @@
     return ALL_GAMES.slice(ALL_GAMES.length - n);
   }
 
+  // ---- Statistics: computed over the games currently shown in the graph ----
+  function computeStats(){
+    var games = getSelectedGames();
+    var startIdx = ALL_GAMES.length - games.length; // position in ALL_GAMES of games[0]
+    var winSum = 0, winCount = 0, winSkipped = 0;
+    var lossSum = 0, lossCount = 0, lossSkipped = 0;
+    var vodCount = 0, ltCount = 0;
+    var mapTallies = {};
+
+    games.forEach(function(g, k){
+      var i = startIdx + k;
+      if (g.vodReviewed) vodCount++;
+      if (g.leaverThrower) ltCount++;
+
+      // Progress change vs. the game logged just before this one, even when that
+      // game is outside the shown range. v includes division changes, so a
+      // promotion or demotion counts as an ordinary step.
+      if (i > 0){
+        var delta = g.v - ALL_GAMES[i - 1].v;
+        if (g.result === 'Win'){
+          if (delta >= 0){ winSum += delta; winCount++; } else { winSkipped++; }
+        } else if (g.result === 'Loss'){
+          if (delta <= 0){ lossSum += delta; lossCount++; } else { lossSkipped++; }
+        }
+      }
+
+      if (g.result === 'Win' || g.result === 'Loss'){
+        var t = mapTallies[g.map] || (mapTallies[g.map] = { map: g.map, w: 0, l: 0 });
+        if (g.result === 'Win') t.w++; else t.l++;
+      }
+    });
+
+    var maps = Object.keys(mapTallies).map(function(k){ return mapTallies[k]; });
+    function ratio(m){ return m.l === 0 ? Infinity : m.w / m.l; }
+    var byBest = maps.slice().sort(function(a, b){ return (ratio(b) - ratio(a)) || (b.w - a.w); });
+    var byWorst = maps.slice().sort(function(a, b){ return (ratio(a) - ratio(b)) || (b.l - a.l); });
+
+    return {
+      winAvg: winCount ? winSum / winCount : null,
+      winCount: winCount,
+      winSkipped: winSkipped,
+      lossAvg: lossCount ? lossSum / lossCount : null,
+      lossCount: lossCount,
+      lossSkipped: lossSkipped,
+      best: byBest[0] || null,
+      worst: byWorst[0] || null,
+      total: games.length,
+      vodCount: vodCount,
+      ltCount: ltCount
+    };
+  }
+
+  function ratioText(m){
+    return m.l === 0 ? 'no losses' : (m.w / m.l).toFixed(2) + ' W/L';
+  }
+
+  function fmtSignedPct(x){
+    if (x === null) return '—';
+    return (x >= 0 ? '+' : '-') + Math.abs(x * 100).toFixed(1) + '%';
+  }
+
+  function fmtSharePct(part, whole){
+    return whole ? (part / whole * 100).toFixed(1) + '%' : '—';
+  }
+
+  function setStat(id, text){
+    document.getElementById(id).textContent = text;
+  }
+
+  function renderStats(){
+    var s = computeStats();
+    setStat('statWinAvg', fmtSignedPct(s.winAvg));
+    setStat('statWinSub', s.winCount + ' counted · ' + s.winSkipped + ' excluded');
+    setStat('statLossAvg', fmtSignedPct(s.lossAvg));
+    setStat('statLossSub', s.lossCount + ' counted · ' + s.lossSkipped + ' excluded');
+    setStat('statBestMap', s.best ? s.best.map : '—');
+    setStat('statBestSub', s.best ? s.best.w + '-' + s.best.l + ' · ' + ratioText(s.best) : '');
+    setStat('statWorstMap', s.worst ? s.worst.map : '—');
+    setStat('statWorstSub', s.worst ? s.worst.w + '-' + s.worst.l + ' · ' + ratioText(s.worst) : '');
+    setStat('statVod', fmtSharePct(s.vodCount, s.total));
+    setStat('statVodSub', s.vodCount + ' of ' + s.total + ' games');
+    setStat('statLt', fmtSharePct(s.ltCount, s.total));
+    setStat('statLtSub', s.ltCount + ' of ' + s.total + ' games');
+  }
+
   // ---- Rendering ----
   var svg = document.getElementById('rankSvg');
   var statusEl = document.getElementById('rangeStatus');
@@ -651,6 +736,7 @@
     svg.innerHTML = parts.join('');
 
     statusEl.textContent = n + (n === 1 ? ' game' : ' games') + ' shown \u00b7 ' + labelAt(axisMin) + ' \u2013 ' + labelAt(axisMax) + ' visible range';
+    renderStats();
   }
 
   // ---- Match history table: full log, unaffected by the graph's range filter ----
@@ -726,6 +812,7 @@
     if (!ALL_GAMES.length){
       matchTableBody.innerHTML = '';
       tableEmpty.classList.add('visible');
+      renderStats();
       return;
     }
     tableEmpty.classList.remove('visible');
@@ -763,6 +850,7 @@
     }).join('');
 
     matchTableBody.innerHTML = rowsHtml;
+    renderStats();
   }
 
   matchTableBody.addEventListener('click', function(e){
