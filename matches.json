@@ -740,18 +740,5 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-11-08"
-  },
-  {
-    "map": "Dorado",
-    "hero": "Tracer",
-    "result": "Loss",
-    "rank": "Gold",
-    "division": 1,
-    "percent": 60,
-    "goodComment": "",
-    "badComment": "Thrower",
-    "vodReviewed": false,
-    "leaverThrower": true,
-    "date": "2026-11-08"
   }
 ]
