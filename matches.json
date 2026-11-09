@@ -714,5 +714,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-11-08"
+  },
+  {
+    "map": "Aatlis",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 34,
+    "goodComment": "Did well surprising Zen. Good mechanics. Good uptime.",
+    "badComment": "Be aware of the whole team turning around to look at you. Late engage timing once.",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-08"
   }
 ]
