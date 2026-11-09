@@ -753,5 +753,18 @@
     "vodReviewed": false,
     "leaverThrower": true,
     "date": "2026-11-08"
+  },
+  {
+    "map": "Lijiang Tower",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 1,
+    "goodComment": "",
+    "badComment": "Tilt",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-08"
   }
 ]
