@@ -805,5 +805,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-11-23"
+  },
+  {
+    "map": "Ilios",
+    "hero": "Tracer",
+    "result": "Loss",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 62,
+    "goodComment": "",
+    "badComment": "Stomp, but also tilt led to bad timing",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-23"
   }
 ]
