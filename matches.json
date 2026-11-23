@@ -779,5 +779,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-11-22"
+  },
+  {
+    "map": "Eichenwalde",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 60,
+    "goodComment": "",
+    "badComment": "Careful about the 1v1s taken",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-22"
   }
 ]
