@@ -792,5 +792,18 @@
     "vodReviewed": false,
     "leaverThrower": false,
     "date": "2026-11-22"
+  },
+  {
+    "map": "Oasis",
+    "hero": "Tracer",
+    "result": "Win",
+    "rank": "Gold",
+    "division": 1,
+    "percent": 91,
+    "goodComment": "Stomp",
+    "badComment": "Trigger discipline: Release left click when target is miles from cursor",
+    "vodReviewed": false,
+    "leaverThrower": false,
+    "date": "2026-11-23"
   }
 ]
